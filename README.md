@@ -11,7 +11,7 @@ Phase 0 scaffold for a local-first legal document analysis app.
 
 - Python 3.11+
 - Node.js 20+
-- npm
+- bun
 - Neo4j Desktop (local DB available at localhost:7474)
 - Ollama
 
@@ -26,13 +26,13 @@ Phase 0 scaffold for a local-first legal document analysis app.
 Backend import check:
 
 ```bash
-/home/lightdesk/Projects/policy-ai/.venv/bin/python -c "from lightrag import LightRAG; print('ok')"
+python -c "from lightrag import LightRAG; print('ok')"
 ```
 
 Frontend dev server:
 
 ```bash
-cd frontend && npm run dev
+cd frontend && bun install && bun run dev
 ```
 
 Neo4j browser:
@@ -43,4 +43,24 @@ Ollama embedding model:
 
 ```bash
 ollama pull nomic-embed-text
+```
+
+## Phase 1 (LightRAG Core)
+
+Install backend dependencies with `uv`:
+
+```bash
+uv pip install -r backend/requirements.txt
+```
+
+Create a documents directory and place at least one PDF (for example `truecaller_tos.pdf`):
+
+```bash
+mkdir -p backend/documents
+```
+
+Run the Phase 1 smoke test:
+
+```bash
+cd backend && python smoke_test.py
 ```

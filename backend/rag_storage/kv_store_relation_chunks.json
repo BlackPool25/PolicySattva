@@ -1,0 +1,2319 @@
+{
+  "Spotify<SEP>User": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560",
+      "chunk-8aed38a7977942d417e70183f3781890",
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5",
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 5,
+    "create_time": 1774501667,
+    "update_time": 1774501667,
+    "_id": "Spotify<SEP>User"
+  },
+  "Informal Resolution Period<SEP>Notice": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560",
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 2,
+    "create_time": 1774501667,
+    "update_time": 1774501667,
+    "_id": "Informal Resolution Period<SEP>Notice"
+  },
+  "Arbitration<SEP>National Arbitration And Mediation": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501668,
+    "update_time": 1774501668,
+    "_id": "Arbitration<SEP>National Arbitration And Mediation"
+  },
+  "Dispute<SEP>User": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501668,
+    "update_time": 1774501668,
+    "_id": "Dispute<SEP>User"
+  },
+  "Arbitration<SEP>NAM Rules": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501669,
+    "update_time": 1774501669,
+    "_id": "Arbitration<SEP>NAM Rules"
+  },
+  "Arbitration Agreement<SEP>Federal Arbitration Act": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501669,
+    "update_time": 1774501669,
+    "_id": "Arbitration Agreement<SEP>Federal Arbitration Act"
+  },
+  "Dispute<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501669,
+    "update_time": 1774501669,
+    "_id": "Dispute<SEP>Spotify"
+  },
+  "Informal Settlement Conference<SEP>User": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501669,
+    "update_time": 1774501669,
+    "_id": "Informal Settlement Conference<SEP>User"
+  },
+  "Demand<SEP>Notice": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501669,
+    "update_time": 1774501669,
+    "_id": "Demand<SEP>Notice"
+  },
+  "Demand<SEP>National Arbitration And Mediation": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501670,
+    "update_time": 1774501670,
+    "_id": "Demand<SEP>National Arbitration And Mediation"
+  },
+  "Arbitrator<SEP>NAM Rules": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501670,
+    "update_time": 1774501670,
+    "_id": "Arbitrator<SEP>NAM Rules"
+  },
+  "Dispute<SEP>Notice": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501670,
+    "update_time": 1774501670,
+    "_id": "Dispute<SEP>Notice"
+  },
+  "CT Corporation System<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501670,
+    "update_time": 1774501670,
+    "_id": "CT Corporation System<SEP>Spotify"
+  },
+  "Counsel<SEP>User": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501672,
+    "update_time": 1774501672,
+    "_id": "Counsel<SEP>User"
+  },
+  "Informal Settlement Conference<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501672,
+    "update_time": 1774501672,
+    "_id": "Informal Settlement Conference<SEP>Spotify"
+  },
+  "Dispute<SEP>Tolling Period": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501672,
+    "update_time": 1774501672,
+    "_id": "Dispute<SEP>Tolling Period"
+  },
+  "Arbitration<SEP>Court": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501672,
+    "update_time": 1774501672,
+    "_id": "Arbitration<SEP>Court"
+  },
+  "CT Corporation System<SEP>New York": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501672,
+    "update_time": 1774501672,
+    "_id": "CT Corporation System<SEP>New York"
+  },
+  "Arbitration Fees<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501673,
+    "update_time": 1774501673,
+    "_id": "Arbitration Fees<SEP>Spotify"
+  },
+  "Informal Resolution Period<SEP>Informal Settlement Conference": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501673,
+    "update_time": 1774501673,
+    "_id": "Informal Resolution Period<SEP>Informal Settlement Conference"
+  },
+  "Arbitrator<SEP>County Or Parish": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501673,
+    "update_time": 1774501673,
+    "_id": "Arbitrator<SEP>County Or Parish"
+  },
+  "Comprehensive Dispute Resolution Rules And Procedures<SEP>NAM Rules": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501673,
+    "update_time": 1774501673,
+    "_id": "Comprehensive Dispute Resolution Rules And Procedures<SEP>NAM Rules"
+  },
+  "Spotify<SEP>Spotify Representative": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501674,
+    "update_time": 1774501674,
+    "_id": "Spotify<SEP>Spotify Representative"
+  },
+  "Arbitrator<SEP>Federal Law": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501674,
+    "update_time": 1774501674,
+    "_id": "Arbitrator<SEP>Federal Law"
+  },
+  "Arbitration Administrator<SEP>National Arbitration And Mediation": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501674,
+    "update_time": 1774501674,
+    "_id": "Arbitration Administrator<SEP>National Arbitration And Mediation"
+  },
+  "NAM Rules<SEP>Supplemental Rules For Mass Arbitration Filings": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501674,
+    "update_time": 1774501674,
+    "_id": "NAM Rules<SEP>Supplemental Rules For Mass Arbitration Filings"
+  },
+  "Arbitration Agreement<SEP>User": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501674,
+    "update_time": 1774501674,
+    "_id": "Arbitration Agreement<SEP>User"
+  },
+  "Counsel<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501675,
+    "update_time": 1774501675,
+    "_id": "Counsel<SEP>Spotify"
+  },
+  "Arbitrator<SEP>State Law": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501675,
+    "update_time": 1774501675,
+    "_id": "Arbitrator<SEP>State Law"
+  },
+  "Federal Or State Courts Of New York<SEP>New York, New York": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501675,
+    "update_time": 1774501675,
+    "_id": "Federal Or State Courts Of New York<SEP>New York, New York"
+  },
+  "Jury Trial<SEP>User": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501675,
+    "update_time": 1774501675,
+    "_id": "Jury Trial<SEP>User"
+  },
+  "Counsel<SEP>Federal Rule Of Civil Procedure 11(b)": {
+    "chunk_ids": [
+      "chunk-608e283357e8e0c042c511ec80c42560"
+    ],
+    "count": 1,
+    "create_time": 1774501676,
+    "update_time": 1774501676,
+    "_id": "Counsel<SEP>Federal Rule Of Civil Procedure 11(b)"
+  },
+  "Arbitration Agreement<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890",
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 2,
+    "create_time": 1774501676,
+    "update_time": 1774501676,
+    "_id": "Arbitration Agreement<SEP>Spotify"
+  },
+  "Arbitrator<SEP>Dispute": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501676,
+    "update_time": 1774501676,
+    "_id": "Arbitrator<SEP>Dispute"
+  },
+  "Notice<SEP>User": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501676,
+    "update_time": 1774501676,
+    "_id": "Notice<SEP>User"
+  },
+  "Federal Or State Courts Of New York<SEP>Intellectual Property Rights": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501676,
+    "update_time": 1774501676,
+    "_id": "Federal Or State Courts Of New York<SEP>Intellectual Property Rights"
+  },
+  "Jury Trial<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501677,
+    "update_time": 1774501677,
+    "_id": "Jury Trial<SEP>Spotify"
+  },
+  "Notice<SEP>Tounotice@spotify.com": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501677,
+    "update_time": 1774501677,
+    "_id": "Notice<SEP>Tounotice@spotify.com"
+  },
+  "Federal Or State Courts Of New York<SEP>Pre-arbitration Filing Requirements": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501677,
+    "update_time": 1774501677,
+    "_id": "Federal Or State Courts Of New York<SEP>Pre-arbitration Filing Requirements"
+  },
+  "Dispute<SEP>U.S. Small Claims Court": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890",
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 2,
+    "create_time": 1774501677,
+    "update_time": 1774501677,
+    "_id": "Dispute<SEP>U.S. Small Claims Court"
+  },
+  "Spotify<SEP>Tounotice@spotify.com": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501678,
+    "update_time": 1774501678,
+    "_id": "Spotify<SEP>Tounotice@spotify.com"
+  },
+  "Arbitration Agreement<SEP>Dispute": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890",
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 2,
+    "create_time": 1774501678,
+    "update_time": 1774501678,
+    "_id": "Arbitration Agreement<SEP>Dispute"
+  },
+  "Arbitrability<SEP>Federal Or State Courts Of New York": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501678,
+    "update_time": 1774501678,
+    "_id": "Arbitrability<SEP>Federal Or State Courts Of New York"
+  },
+  "Arbitrator<SEP>Public Injunctive Relief": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501679,
+    "update_time": 1774501679,
+    "_id": "Arbitrator<SEP>Public Injunctive Relief"
+  },
+  "User<SEP>User Email Address": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501679,
+    "update_time": 1774501679,
+    "_id": "User<SEP>User Email Address"
+  },
+  "Class Action Waiver<SEP>Federal Or State Courts Of New York": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501680,
+    "update_time": 1774501680,
+    "_id": "Class Action Waiver<SEP>Federal Or State Courts Of New York"
+  },
+  "Informal Resolution Period<SEP>Sixty-Day Resolution Period": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501680,
+    "update_time": 1774501680,
+    "_id": "Informal Resolution Period<SEP>Sixty-Day Resolution Period"
+  },
+  "Arbitrability<SEP>Arbitrator": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501680,
+    "update_time": 1774501680,
+    "_id": "Arbitrability<SEP>Arbitrator"
+  },
+  "Notice<SEP>User Email Address": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501680,
+    "update_time": 1774501680,
+    "_id": "Notice<SEP>User Email Address"
+  },
+  "Federal Or State Courts Of New York<SEP>Mass Arbitrations": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501681,
+    "update_time": 1774501681,
+    "_id": "Federal Or State Courts Of New York<SEP>Mass Arbitrations"
+  },
+  "Class Action Waiver<SEP>Private Attorney General Action": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501681,
+    "update_time": 1774501681,
+    "_id": "Class Action Waiver<SEP>Private Attorney General Action"
+  },
+  "Spotify<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e",
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 3,
+    "create_time": 1774501681,
+    "update_time": 1774501681,
+    "_id": "Spotify<SEP>Spotify Terms"
+  },
+  "Spotify Service<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501682,
+    "update_time": 1774501682,
+    "_id": "Spotify Service<SEP>Spotify Terms"
+  },
+  "Arbitrator<SEP>Mass Arbitration Section": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501682,
+    "update_time": 1774501682,
+    "_id": "Arbitrator<SEP>Mass Arbitration Section"
+  },
+  "Arbitration Agreement<SEP>Class Action Waiver": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501682,
+    "update_time": 1774501682,
+    "_id": "Arbitration Agreement<SEP>Class Action Waiver"
+  },
+  "Premium Subscribers<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501683,
+    "update_time": 1774501683,
+    "_id": "Premium Subscribers<SEP>Spotify Service"
+  },
+  "Arbitration Agreement<SEP>Binding Individual Arbitration": {
+    "chunk_ids": [
+      "chunk-8aed38a7977942d417e70183f3781890"
+    ],
+    "count": 1,
+    "create_time": 1774501683,
+    "update_time": 1774501683,
+    "_id": "Arbitration Agreement<SEP>Binding Individual Arbitration"
+  },
+  "Dispute<SEP>Federal Or State Courts Of New York": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501683,
+    "update_time": 1774501683,
+    "_id": "Dispute<SEP>Federal Or State Courts Of New York"
+  },
+  "Court Of Competent Jurisdiction<SEP>Mass Arbitration Section": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501683,
+    "update_time": 1774501683,
+    "_id": "Court Of Competent Jurisdiction<SEP>Mass Arbitration Section"
+  },
+  "Premium Subscribers<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501684,
+    "update_time": 1774501684,
+    "_id": "Premium Subscribers<SEP>Spotify"
+  },
+  "Federal Or State Courts Of New York<SEP>New York": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501684,
+    "update_time": 1774501684,
+    "_id": "Federal Or State Courts Of New York<SEP>New York"
+  },
+  "Spotify Privacy Policy<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 2,
+    "create_time": 1774501685,
+    "update_time": 1774501685,
+    "_id": "Spotify Privacy Policy<SEP>Spotify Terms"
+  },
+  "Mass Arbitration Section<SEP>Staged Process": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501686,
+    "update_time": 1774501686,
+    "_id": "Mass Arbitration Section<SEP>Staged Process"
+  },
+  "Arbitration Agreement<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501686,
+    "update_time": 1774501686,
+    "_id": "Arbitration Agreement<SEP>Spotify Terms"
+  },
+  "Spotify Terms<SEP>Spotify User Guidelines": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501687,
+    "update_time": 1774501687,
+    "_id": "Spotify Terms<SEP>Spotify User Guidelines"
+  },
+  "Individual Arbitrations<SEP>Staged Process": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501687,
+    "update_time": 1774501687,
+    "_id": "Individual Arbitrations<SEP>Staged Process"
+  },
+  "Arbitration Agreement<SEP>Mass Arbitration Section": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501687,
+    "update_time": 1774501687,
+    "_id": "Arbitration Agreement<SEP>Mass Arbitration Section"
+  },
+  "Spotify Platform Rules<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 2,
+    "create_time": 1774501688,
+    "update_time": 1774501688,
+    "_id": "Spotify Platform Rules<SEP>Spotify Terms"
+  },
+  "Opt-Out Notice<SEP>User": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501688,
+    "update_time": 1774501688,
+    "_id": "Opt-Out Notice<SEP>User"
+  },
+  "Arbitration Agreement<SEP>Arbitration Fees": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501688,
+    "update_time": 1774501688,
+    "_id": "Arbitration Agreement<SEP>Arbitration Fees"
+  },
+  "Spotify Intellectual Property Policy<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501689,
+    "update_time": 1774501689,
+    "_id": "Spotify Intellectual Property Policy<SEP>Spotify Terms"
+  },
+  "Opt-Out Notice<SEP>Spotify Notice Email": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501689,
+    "update_time": 1774501689,
+    "_id": "Opt-Out Notice<SEP>Spotify Notice Email"
+  },
+  "Spotify Audiobook Purchase Terms And Conditions<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501690,
+    "update_time": 1774501690,
+    "_id": "Spotify Audiobook Purchase Terms And Conditions<SEP>Spotify Terms"
+  },
+  "Opt-Out Deadline<SEP>User": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501690,
+    "update_time": 1774501690,
+    "_id": "Opt-Out Deadline<SEP>User"
+  },
+  "Arbitration Agreement<SEP>Opt-Out Notice": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501690,
+    "update_time": 1774501690,
+    "_id": "Arbitration Agreement<SEP>Opt-Out Notice"
+  },
+  "Class Proceeding<SEP>User": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501691,
+    "update_time": 1774501691,
+    "_id": "Class Proceeding<SEP>User"
+  },
+  "Effective Date<SEP>Premium Subscribers": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501691,
+    "update_time": 1774501691,
+    "_id": "Effective Date<SEP>Premium Subscribers"
+  },
+  "Agent<SEP>Opt-Out Notice": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501691,
+    "update_time": 1774501691,
+    "_id": "Agent<SEP>Opt-Out Notice"
+  },
+  "Spotify Terms<SEP>Spotify's Card Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 2,
+    "create_time": 1774501691,
+    "update_time": 1774501691,
+    "_id": "Spotify Terms<SEP>Spotify's Card Terms"
+  },
+  "Governing Law, Jurisdiction, And Jury Trial Waiver<SEP>User": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501693,
+    "update_time": 1774501693,
+    "_id": "Governing Law, Jurisdiction, And Jury Trial Waiver<SEP>User"
+  },
+  "Attorney<SEP>Opt-Out Notice": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e"
+    ],
+    "count": 1,
+    "create_time": 1774501693,
+    "update_time": 1774501693,
+    "_id": "Attorney<SEP>Opt-Out Notice"
+  },
+  "Spotify Support Community Terms<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 2,
+    "create_time": 1774501693,
+    "update_time": 1774501693,
+    "_id": "Spotify Support Community Terms<SEP>Spotify Terms"
+  },
+  "Content<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501693,
+    "update_time": 1774501693,
+    "_id": "Content<SEP>Spotify"
+  },
+  "Spotify<SEP>Spotify Software Applications": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501694,
+    "update_time": 1774501694,
+    "_id": "Spotify<SEP>Spotify Software Applications"
+  },
+  "Terms<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501694,
+    "update_time": 1774501694,
+    "_id": "Terms<SEP>User"
+  },
+  "Spotify<SEP>Spotify Brand Features": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501695,
+    "update_time": 1774501695,
+    "_id": "Spotify<SEP>Spotify Brand Features"
+  },
+  "Spotify Service<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 3,
+    "create_time": 1774501695,
+    "update_time": 1774501695,
+    "_id": "Spotify Service<SEP>User"
+  },
+  "Spotify Account<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 2,
+    "create_time": 1774501696,
+    "update_time": 1774501696,
+    "_id": "Spotify Account<SEP>User"
+  },
+  "User<SEP>Username": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501697,
+    "update_time": 1774501697,
+    "_id": "User<SEP>Username"
+  },
+  "Password<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501699,
+    "update_time": 1774501699,
+    "_id": "Password<SEP>User"
+  },
+  "Paid Subscription<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 2,
+    "create_time": 1774501700,
+    "update_time": 1774501700,
+    "_id": "Paid Subscription<SEP>User"
+  },
+  "Spotify<SEP>Username": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501700,
+    "update_time": 1774501700,
+    "_id": "Spotify<SEP>Username"
+  },
+  "Spotify User Guidelines<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 2,
+    "create_time": 1774501701,
+    "update_time": 1774501701,
+    "_id": "Spotify User Guidelines<SEP>User"
+  },
+  "Paid Subscription<SEP>Third Parties": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501701,
+    "update_time": 1774501701,
+    "_id": "Paid Subscription<SEP>Third Parties"
+  },
+  "Government Authorities<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501701,
+    "update_time": 1774501701,
+    "_id": "Government Authorities<SEP>Spotify"
+  },
+  "Platform Rules<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 2,
+    "create_time": 1774501702,
+    "update_time": 1774501702,
+    "_id": "Platform Rules<SEP>User"
+  },
+  "Applicable Owners<SEP>Content": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501702,
+    "update_time": 1774501702,
+    "_id": "Applicable Owners<SEP>Content"
+  },
+  "Audiobook Content<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501704,
+    "update_time": 1774501704,
+    "_id": "Audiobook Content<SEP>User"
+  },
+  "Internet<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501704,
+    "update_time": 1774501704,
+    "_id": "Internet<SEP>Spotify"
+  },
+  "Codes<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501705,
+    "update_time": 1774501705,
+    "_id": "Codes<SEP>User"
+  },
+  "Customer Service Team<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501706,
+    "update_time": 1774501706,
+    "_id": "Customer Service Team<SEP>User"
+  },
+  "Paid Subscription<SEP>Subscription Fee": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501706,
+    "update_time": 1774501706,
+    "_id": "Paid Subscription<SEP>Subscription Fee"
+  },
+  "Spotify Service<SEP>Spotify USA Inc.": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501707,
+    "update_time": 1774501707,
+    "_id": "Spotify Service<SEP>Spotify USA Inc."
+  },
+  "Country Of Residence<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501707,
+    "update_time": 1774501707,
+    "_id": "Country Of Residence<SEP>User"
+  },
+  "Trial<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501708,
+    "update_time": 1774501708,
+    "_id": "Trial<SEP>User"
+  },
+  "Billing Information<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501709,
+    "update_time": 1774501709,
+    "_id": "Billing Information<SEP>User"
+  },
+  "Tax Rates<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501710,
+    "update_time": 1774501710,
+    "_id": "Tax Rates<SEP>User"
+  },
+  "Payment Method<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501711,
+    "update_time": 1774501711,
+    "_id": "Payment Method<SEP>User"
+  },
+  "Agreements<SEP>User": {
+    "chunk_ids": [
+      "chunk-a6a2a04f961190b8e28b3468acea227a"
+    ],
+    "count": 1,
+    "create_time": 1774501712,
+    "update_time": 1774501712,
+    "_id": "Agreements<SEP>User"
+  },
+  "Spotify Terms Of Use<SEP>User": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501713,
+    "update_time": 1774501713,
+    "_id": "Spotify Terms Of Use<SEP>User"
+  },
+  "United States<SEP>User": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501715,
+    "update_time": 1774501715,
+    "_id": "United States<SEP>User"
+  },
+  "Spotify Service<SEP>Spotify Terms Of Use": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501715,
+    "update_time": 1774501715,
+    "_id": "Spotify Service<SEP>Spotify Terms Of Use"
+  },
+  "Mandatory Arbitration Provision<SEP>Spotify Terms Of Use": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501716,
+    "update_time": 1774501716,
+    "_id": "Mandatory Arbitration Provision<SEP>Spotify Terms Of Use"
+  },
+  "Content<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9",
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 2,
+    "create_time": 1774501716,
+    "update_time": 1774501716,
+    "_id": "Content<SEP>Spotify Service"
+  },
+  "Paid Subscriptions<SEP>Trials": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501716,
+    "update_time": 1774501716,
+    "_id": "Paid Subscriptions<SEP>Trials"
+  },
+  "Legal Guardian<SEP>User": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501716,
+    "update_time": 1774501716,
+    "_id": "Legal Guardian<SEP>User"
+  },
+  "Spotify Privacy Policy<SEP>Spotify Terms Of Use": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501717,
+    "update_time": 1774501717,
+    "_id": "Spotify Privacy Policy<SEP>Spotify Terms Of Use"
+  },
+  "Spotify Service<SEP>Third-Party Applications": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9",
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 3,
+    "create_time": 1774501717,
+    "update_time": 1774501717,
+    "_id": "Spotify Service<SEP>Third-Party Applications"
+  },
+  "Kids Experience<SEP>Primary Account Holder": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501717,
+    "update_time": 1774501717,
+    "_id": "Kids Experience<SEP>Primary Account Holder"
+  },
+  "Paid Subscription Terms<SEP>Trials": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501717,
+    "update_time": 1774501717,
+    "_id": "Paid Subscription Terms<SEP>Trials"
+  },
+  "Agreements<SEP>Spotify Terms Of Use": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501718,
+    "update_time": 1774501718,
+    "_id": "Agreements<SEP>Spotify Terms Of Use"
+  },
+  "Family Subscription<SEP>Kids Experience": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501718,
+    "update_time": 1774501718,
+    "_id": "Family Subscription<SEP>Kids Experience"
+  },
+  "Devices<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9",
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 2,
+    "create_time": 1774501718,
+    "update_time": 1774501718,
+    "_id": "Devices<SEP>Spotify Service"
+  },
+  "Spotify Terms<SEP>User": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 2,
+    "create_time": 1774501718,
+    "update_time": 1774501718,
+    "_id": "Spotify Terms<SEP>User"
+  },
+  "Intellectual Property Policy<SEP>Spotify Terms Of Use": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501719,
+    "update_time": 1774501719,
+    "_id": "Intellectual Property Policy<SEP>Spotify Terms Of Use"
+  },
+  "Spotify<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 2,
+    "create_time": 1774501719,
+    "update_time": 1774501719,
+    "_id": "Spotify<SEP>Spotify Service"
+  },
+  "California Department Of Consumer Affairs<SEP>Complaint Assistance Unit": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501719,
+    "update_time": 1774501719,
+    "_id": "California Department Of Consumer Affairs<SEP>Complaint Assistance Unit"
+  },
+  "California<SEP>Sacramento": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501719,
+    "update_time": 1774501719,
+    "_id": "California<SEP>Sacramento"
+  },
+  "Spotify Terms Of Use<SEP>User Guidelines": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501721,
+    "update_time": 1774501721,
+    "_id": "Spotify Terms Of Use<SEP>User Guidelines"
+  },
+  "Family Subscription<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9"
+    ],
+    "count": 1,
+    "create_time": 1774501721,
+    "update_time": 1774501721,
+    "_id": "Family Subscription<SEP>Spotify Service"
+  },
+  "Spotify<SEP>Spotify Customer Service": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501721,
+    "update_time": 1774501721,
+    "_id": "Spotify<SEP>Spotify Customer Service"
+  },
+  "Complaint Assistance Unit<SEP>Sacramento": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501721,
+    "update_time": 1774501721,
+    "_id": "Complaint Assistance Unit<SEP>Sacramento"
+  },
+  "Third-Party Applications<SEP>User": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501721,
+    "update_time": 1774501721,
+    "_id": "Third-Party Applications<SEP>User"
+  },
+  "Explicit Content Filtering Features<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501722,
+    "update_time": 1774501722,
+    "_id": "Explicit Content Filtering Features<SEP>Spotify Service"
+  },
+  "California Department Of Consumer Affairs<SEP>Division Of Consumer Services": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 2,
+    "create_time": 1774501722,
+    "update_time": 1774501722,
+    "_id": "California Department Of Consumer Affairs<SEP>Division Of Consumer Services"
+  },
+  "Content Owners<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501722,
+    "update_time": 1774501722,
+    "_id": "Content Owners<SEP>Spotify"
+  },
+  "Complaint Assistance Unit<SEP>User": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501722,
+    "update_time": 1774501722,
+    "_id": "Complaint Assistance Unit<SEP>User"
+  },
+  "Spotify<SEP>User Content": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 2,
+    "create_time": 1774501723,
+    "update_time": 1774501723,
+    "_id": "Spotify<SEP>User Content"
+  },
+  "Malware<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501723,
+    "update_time": 1774501723,
+    "_id": "Malware<SEP>Spotify Service"
+  },
+  "California Civil Code Section 1789.3<SEP>Complaint Assistance Unit": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501723,
+    "update_time": 1774501723,
+    "_id": "California Civil Code Section 1789.3<SEP>Complaint Assistance Unit"
+  },
+  "Spotify Software<SEP>User": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501723,
+    "update_time": 1774501723,
+    "_id": "Spotify Software<SEP>User"
+  },
+  "Implied Warranties<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501723,
+    "update_time": 1774501723,
+    "_id": "Implied Warranties<SEP>Spotify Terms"
+  },
+  "Devices<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501724,
+    "update_time": 1774501724,
+    "_id": "Devices<SEP>Spotify"
+  },
+  "Complaint Assistance Unit<SEP>Division Of Consumer Services": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 2,
+    "create_time": 1774501724,
+    "update_time": 1774501724,
+    "_id": "Complaint Assistance Unit<SEP>Division Of Consumer Services"
+  },
+  "Service Provider Section<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501724,
+    "update_time": 1774501724,
+    "_id": "Service Provider Section<SEP>Spotify Terms"
+  },
+  "Third-Party Providers<SEP>User": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501724,
+    "update_time": 1774501724,
+    "_id": "Third-Party Providers<SEP>User"
+  },
+  "Spotify Service<SEP>Spotify Software": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501724,
+    "update_time": 1774501724,
+    "_id": "Spotify Service<SEP>Spotify Software"
+  },
+  "About Us<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501725,
+    "update_time": 1774501725,
+    "_id": "About Us<SEP>Spotify"
+  },
+  "Content<SEP>Content Owners": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501725,
+    "update_time": 1774501725,
+    "_id": "Content<SEP>Content Owners"
+  },
+  "Complaint Assistance Unit<SEP>Telephone Number": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501726,
+    "update_time": 1774501726,
+    "_id": "Complaint Assistance Unit<SEP>Telephone Number"
+  },
+  "Customer Support<SEP>User": {
+    "chunk_ids": [
+      "chunk-1115ec114e6fde75453861a2a172649c"
+    ],
+    "count": 1,
+    "create_time": 1774501726,
+    "update_time": 1774501726,
+    "_id": "Customer Support<SEP>User"
+  },
+  "Brand<SEP>Brand Account": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501726,
+    "update_time": 1774501726,
+    "_id": "Brand<SEP>Brand Account"
+  },
+  "Spotify Service<SEP>User Content": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9",
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 2,
+    "create_time": 1774501726,
+    "update_time": 1774501726,
+    "_id": "Spotify Service<SEP>User Content"
+  },
+  "Paid Subscription<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501727,
+    "update_time": 1774501727,
+    "_id": "Paid Subscription<SEP>Spotify"
+  },
+  "User<SEP>User Content": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9",
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 2,
+    "create_time": 1774501727,
+    "update_time": 1774501727,
+    "_id": "User<SEP>User Content"
+  },
+  "Code<SEP>Paid Subscription": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501728,
+    "update_time": 1774501728,
+    "_id": "Code<SEP>Paid Subscription"
+  },
+  "Trade Control Laws<SEP>User": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501728,
+    "update_time": 1774501728,
+    "_id": "Trade Control Laws<SEP>User"
+  },
+  "Artist<SEP>Brand": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501729,
+    "update_time": 1774501729,
+    "_id": "Artist<SEP>Brand"
+  },
+  "Sanctioned Country<SEP>User": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501729,
+    "update_time": 1774501729,
+    "_id": "Sanctioned Country<SEP>User"
+  },
+  "European Union<SEP>Trade Control Laws": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501729,
+    "update_time": 1774501729,
+    "_id": "European Union<SEP>Trade Control Laws"
+  },
+  "Brand<SEP>Songwriter": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501730,
+    "update_time": 1774501730,
+    "_id": "Brand<SEP>Songwriter"
+  },
+  "Third Party<SEP>User": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501730,
+    "update_time": 1774501730,
+    "_id": "Third Party<SEP>User"
+  },
+  "Trade Control Laws<SEP>United Kingdom": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501730,
+    "update_time": 1774501730,
+    "_id": "Trade Control Laws<SEP>United Kingdom"
+  },
+  "Trade Control Laws<SEP>United States": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501731,
+    "update_time": 1774501731,
+    "_id": "Trade Control Laws<SEP>United States"
+  },
+  "Spotify<SEP>Trade Control Laws": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501732,
+    "update_time": 1774501732,
+    "_id": "Spotify<SEP>Trade Control Laws"
+  },
+  "Regulation 2021/821<SEP>Trade Control Laws": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501733,
+    "update_time": 1774501733,
+    "_id": "Regulation 2021/821<SEP>Trade Control Laws"
+  },
+  "Prepaid Period<SEP>User": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501733,
+    "update_time": 1774501733,
+    "_id": "Prepaid Period<SEP>User"
+  },
+  "Trade Control Laws<SEP>UK Export Control Act 2002": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501734,
+    "update_time": 1774501734,
+    "_id": "Trade Control Laws<SEP>UK Export Control Act 2002"
+  },
+  "Spotify<SEP>Third-Party Beneficiary": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501734,
+    "update_time": 1774501734,
+    "_id": "Spotify<SEP>Third-Party Beneficiary"
+  },
+  "Spotify AB<SEP>USA": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501734,
+    "update_time": 1774501734,
+    "_id": "Spotify AB<SEP>USA"
+  },
+  "Export Administration Regulations<SEP>Trade Control Laws": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501735,
+    "update_time": 1774501735,
+    "_id": "Export Administration Regulations<SEP>Trade Control Laws"
+  },
+  "Spotify<SEP>Spotify Premium Individual": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501735,
+    "update_time": 1774501735,
+    "_id": "Spotify<SEP>Spotify Premium Individual"
+  },
+  "Spotify Paid Subscription Terms<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501735,
+    "update_time": 1774501735,
+    "_id": "Spotify Paid Subscription Terms<SEP>Spotify Terms"
+  },
+  "Office Of Foreign Assets Control<SEP>Trade Control Laws": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501736,
+    "update_time": 1774501736,
+    "_id": "Office Of Foreign Assets Control<SEP>Trade Control Laws"
+  },
+  "Export Administration Regulations<SEP>U.S. Department Of Commerce": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501736,
+    "update_time": 1774501736,
+    "_id": "Export Administration Regulations<SEP>U.S. Department Of Commerce"
+  },
+  "Spotify<SEP>Spotify AB": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501737,
+    "update_time": 1774501737,
+    "_id": "Spotify<SEP>Spotify AB"
+  },
+  "Spotify Audiobook Purchase Terms and Conditions<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501737,
+    "update_time": 1774501737,
+    "_id": "Spotify Audiobook Purchase Terms and Conditions<SEP>Spotify Terms"
+  },
+  "International Traffic In Arms Regulations<SEP>Trade Control Laws": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501737,
+    "update_time": 1774501737,
+    "_id": "International Traffic In Arms Regulations<SEP>Trade Control Laws"
+  },
+  "Spotify<SEP>Spotify Premium Duo": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501738,
+    "update_time": 1774501738,
+    "_id": "Spotify<SEP>Spotify Premium Duo"
+  },
+  "Department Of State<SEP>International Traffic In Arms Regulations": {
+    "chunk_ids": [
+      "chunk-d4339c6a301c016cc58bd814099884b9"
+    ],
+    "count": 1,
+    "create_time": 1774501739,
+    "update_time": 1774501739,
+    "_id": "Department Of State<SEP>International Traffic In Arms Regulations"
+  },
+  "Spotify<SEP>Spotify Premium Family": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501739,
+    "update_time": 1774501739,
+    "_id": "Spotify<SEP>Spotify Premium Family"
+  },
+  "Severability and Waiver<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501740,
+    "update_time": 1774501740,
+    "_id": "Severability and Waiver<SEP>Spotify Terms"
+  },
+  "Spotify<SEP>Spotify Premium Student": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501740,
+    "update_time": 1774501740,
+    "_id": "Spotify<SEP>Spotify Premium Student"
+  },
+  "Assignment<SEP>Spotify Terms": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501741,
+    "update_time": 1774501741,
+    "_id": "Assignment<SEP>Spotify Terms"
+  },
+  "The Terms<SEP>User": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501741,
+    "update_time": 1774501741,
+    "_id": "The Terms<SEP>User"
+  },
+  "Audiobooks Access<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501742,
+    "update_time": 1774501742,
+    "_id": "Audiobooks Access<SEP>Spotify"
+  },
+  "Apple Inc.<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501742,
+    "update_time": 1774501742,
+    "_id": "Apple Inc.<SEP>The Terms"
+  },
+  "Spotify<SEP>Spotify Web Player": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501742,
+    "update_time": 1774501742,
+    "_id": "Spotify<SEP>Spotify Web Player"
+  },
+  "New York State Law<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501743,
+    "update_time": 1774501743,
+    "_id": "New York State Law<SEP>The Terms"
+  },
+  "Apple Inc.<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501743,
+    "update_time": 1774501743,
+    "_id": "Apple Inc.<SEP>Spotify Service"
+  },
+  "Spotify<SEP>Spotify Free Mobile App": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501744,
+    "update_time": 1774501744,
+    "_id": "Spotify<SEP>Spotify Free Mobile App"
+  },
+  "Arbitration Agreement<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501744,
+    "update_time": 1774501744,
+    "_id": "Arbitration Agreement<SEP>The Terms"
+  },
+  "Federal Law<SEP>New York State Law": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501744,
+    "update_time": 1774501744,
+    "_id": "Federal Law<SEP>New York State Law"
+  },
+  "Apple App Store<SEP>Apple Inc.": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501744,
+    "update_time": 1774501744,
+    "_id": "Apple App Store<SEP>Apple Inc."
+  },
+  "Spotify<SEP>Spotify For Artists": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501744,
+    "update_time": 1774501744,
+    "_id": "Spotify<SEP>Spotify For Artists"
+  },
+  "IOS Device<SEP>User": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501744,
+    "update_time": 1774501744,
+    "_id": "IOS Device<SEP>User"
+  },
+  "New York<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501745,
+    "update_time": 1774501745,
+    "_id": "New York<SEP>The Terms"
+  },
+  "Spotify<SEP>Spotify For Developers": {
+    "chunk_ids": [
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "count": 1,
+    "create_time": 1774501746,
+    "update_time": 1774501746,
+    "_id": "Spotify<SEP>Spotify For Developers"
+  },
+  "Apple Inc.<SEP>Intellectual Property Infringement": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501746,
+    "update_time": 1774501746,
+    "_id": "Apple Inc.<SEP>Intellectual Property Infringement"
+  },
+  "Spotify's Affiliates<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501747,
+    "update_time": 1774501747,
+    "_id": "Spotify's Affiliates<SEP>The Terms"
+  },
+  "Apple Inc.<SEP>User": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501747,
+    "update_time": 1774501747,
+    "_id": "Apple Inc.<SEP>User"
+  },
+  "Apple's Subsidiaries<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501748,
+    "update_time": 1774501748,
+    "_id": "Apple's Subsidiaries<SEP>The Terms"
+  },
+  "One-Year Limitation Period<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501749,
+    "update_time": 1774501749,
+    "_id": "One-Year Limitation Period<SEP>The Terms"
+  },
+  "Arbitration Fees<SEP>NAM Rules": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501749,
+    "update_time": 1774501749,
+    "_id": "Arbitration Fees<SEP>NAM Rules"
+  },
+  "Arbitration Fees<SEP>Arbitrator": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501750,
+    "update_time": 1774501750,
+    "_id": "Arbitration Fees<SEP>Arbitrator"
+  },
+  "Fraud<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501750,
+    "update_time": 1774501750,
+    "_id": "Fraud<SEP>The Terms"
+  },
+  "Demand Or Individual Action<SEP>One-Year Limitation Period": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501750,
+    "update_time": 1774501750,
+    "_id": "Demand Or Individual Action<SEP>One-Year Limitation Period"
+  },
+  "Informal Resolution Period<SEP>Mass Arbitration": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501750,
+    "update_time": 1774501750,
+    "_id": "Informal Resolution Period<SEP>Mass Arbitration"
+  },
+  "First Stage<SEP>Global Mediation": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501751,
+    "update_time": 1774501751,
+    "_id": "First Stage<SEP>Global Mediation"
+  },
+  "Spotify<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501751,
+    "update_time": 1774501751,
+    "_id": "Spotify<SEP>The Terms"
+  },
+  "Court<SEP>Mass Arbitration": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501751,
+    "update_time": 1774501751,
+    "_id": "Court<SEP>Mass Arbitration"
+  },
+  "The Terms<SEP>Twelve-Month Payment History": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501753,
+    "update_time": 1774501753,
+    "_id": "The Terms<SEP>Twelve-Month Payment History"
+  },
+  "Mediator<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501753,
+    "update_time": 1774501753,
+    "_id": "Mediator<SEP>Spotify"
+  },
+  "Global Mediation<SEP>Second Stage": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501753,
+    "update_time": 1774501753,
+    "_id": "Global Mediation<SEP>Second Stage"
+  },
+  "Mass Arbitration<SEP>Tolling Period": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501753,
+    "update_time": 1774501753,
+    "_id": "Mass Arbitration<SEP>Tolling Period"
+  },
+  "Arbitration Administrator<SEP>Arbitration Fees": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501753,
+    "update_time": 1774501753,
+    "_id": "Arbitration Administrator<SEP>Arbitration Fees"
+  },
+  "Arbitration Agreement<SEP>Arbitrator": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501753,
+    "update_time": 1774501753,
+    "_id": "Arbitration Agreement<SEP>Arbitrator"
+  },
+  "Claimant<SEP>Notice": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501754,
+    "update_time": 1774501754,
+    "_id": "Claimant<SEP>Notice"
+  },
+  "Mass Arbitration<SEP>Process Arbitrator": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501754,
+    "update_time": 1774501754,
+    "_id": "Mass Arbitration<SEP>Process Arbitrator"
+  },
+  "Applicable Law<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501754,
+    "update_time": 1774501754,
+    "_id": "Applicable Law<SEP>The Terms"
+  },
+  "Court<SEP>Option One": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501754,
+    "update_time": 1774501754,
+    "_id": "Court<SEP>Option One"
+  },
+  "Claimant<SEP>Demand": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501755,
+    "update_time": 1774501755,
+    "_id": "Claimant<SEP>Demand"
+  },
+  "Option Two<SEP>Staged Proceedings": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501755,
+    "update_time": 1774501755,
+    "_id": "Option Two<SEP>Staged Proceedings"
+  },
+  "Personal Injury Or Death<SEP>The Terms": {
+    "chunk_ids": [
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d"
+    ],
+    "count": 1,
+    "create_time": 1774501755,
+    "update_time": 1774501755,
+    "_id": "Personal Injury Or Death<SEP>The Terms"
+  },
+  "Notice Of Intention To Opt Out<SEP>Tounotice@spotify.com": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501755,
+    "update_time": 1774501755,
+    "_id": "Notice Of Intention To Opt Out<SEP>Tounotice@spotify.com"
+  },
+  "Arbitrator<SEP>Ruling": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501756,
+    "update_time": 1774501756,
+    "_id": "Arbitrator<SEP>Ruling"
+  },
+  "Spotify Users<SEP>User Content": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501756,
+    "update_time": 1774501756,
+    "_id": "Spotify Users<SEP>User Content"
+  },
+  "Claimant<SEP>Counsel": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501756,
+    "update_time": 1774501756,
+    "_id": "Claimant<SEP>Counsel"
+  },
+  "Claimant<SEP>Option One": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501758,
+    "update_time": 1774501758,
+    "_id": "Claimant<SEP>Option One"
+  },
+  "Intellectual Property Policy<SEP>User Content": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501758,
+    "update_time": 1774501758,
+    "_id": "Intellectual Property Policy<SEP>User Content"
+  },
+  "Device<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501758,
+    "update_time": 1774501758,
+    "_id": "Device<SEP>Spotify Service"
+  },
+  "Feedback<SEP>User Content": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501759,
+    "update_time": 1774501759,
+    "_id": "Feedback<SEP>User Content"
+  },
+  "Community Terms<SEP>Spotify Community": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501759,
+    "update_time": 1774501759,
+    "_id": "Community Terms<SEP>Spotify Community"
+  },
+  "Claimant<SEP>Option Two": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501759,
+    "update_time": 1774501759,
+    "_id": "Claimant<SEP>Option Two"
+  },
+  "Business Partners<SEP>Device": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501759,
+    "update_time": 1774501759,
+    "_id": "Business Partners<SEP>Device"
+  },
+  "Customer Support<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501759,
+    "update_time": 1774501759,
+    "_id": "Customer Support<SEP>Spotify Users"
+  },
+  "California Civil Code Section 1789.3<SEP>California Department Of Consumer Affairs": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501759,
+    "update_time": 1774501759,
+    "_id": "California Civil Code Section 1789.3<SEP>California Department Of Consumer Affairs"
+  },
+  "Feedback<SEP>Spotify": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501760,
+    "update_time": 1774501760,
+    "_id": "Feedback<SEP>Spotify"
+  },
+  "Claimant<SEP>Notice Of Intention To Opt Out": {
+    "chunk_ids": [
+      "chunk-96388553612176fa40240431e62e4a71"
+    ],
+    "count": 1,
+    "create_time": 1774501760,
+    "update_time": 1774501760,
+    "_id": "Claimant<SEP>Notice Of Intention To Opt Out"
+  },
+  "Spotify Service<SEP>Understanding Recommendations On Spotify": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501760,
+    "update_time": 1774501760,
+    "_id": "Spotify Service<SEP>Understanding Recommendations On Spotify"
+  },
+  "Content Actions<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501760,
+    "update_time": 1774501760,
+    "_id": "Content Actions<SEP>Spotify Users"
+  },
+  "California Department Of Consumer Affairs<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501761,
+    "update_time": 1774501761,
+    "_id": "California Department Of Consumer Affairs<SEP>Spotify Users"
+  },
+  "Commercial Considerations<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501761,
+    "update_time": 1774501761,
+    "_id": "Commercial Considerations<SEP>Spotify Service"
+  },
+  "Advertising<SEP>Spotify Service": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501762,
+    "update_time": 1774501762,
+    "_id": "Advertising<SEP>Spotify Service"
+  },
+  "California<SEP>California Department Of Consumer Affairs": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501762,
+    "update_time": 1774501762,
+    "_id": "California<SEP>California Department Of Consumer Affairs"
+  },
+  "About Us Section<SEP>Customer Support": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501762,
+    "update_time": 1774501762,
+    "_id": "About Us Section<SEP>Customer Support"
+  },
+  "Safety & Privacy Center<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501762,
+    "update_time": 1774501762,
+    "_id": "Safety & Privacy Center<SEP>Spotify Users"
+  },
+  "Artist<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501764,
+    "update_time": 1774501764,
+    "_id": "Artist<SEP>Spotify Users"
+  },
+  "Band<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501765,
+    "update_time": 1774501765,
+    "_id": "Band<SEP>Spotify Users"
+  },
+  "Label<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501766,
+    "update_time": 1774501766,
+    "_id": "Label<SEP>Spotify Users"
+  },
+  "Spotify Users<SEP>Third Party": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501767,
+    "update_time": 1774501767,
+    "_id": "Spotify Users<SEP>Third Party"
+  },
+  "Service Provider Section<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501768,
+    "update_time": 1774501768,
+    "_id": "Service Provider Section<SEP>Spotify Users"
+  },
+  "California Civil Code Section 1789.3<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501769,
+    "update_time": 1774501769,
+    "_id": "California Civil Code Section 1789.3<SEP>Spotify Users"
+  },
+  "Moral Rights<SEP>Spotify Users": {
+    "chunk_ids": [
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4"
+    ],
+    "count": 1,
+    "create_time": 1774501771,
+    "update_time": 1774501771,
+    "_id": "Moral Rights<SEP>Spotify Users"
+  }
+}

@@ -1,6 +1,6 @@
 # AGENTS.md — Rules for AI Coding Agents
 
-Read PROJECT_CONTEXT.md first. Always. Before writing a single line of code.
+Read CONTEXT.md first. Always. Before writing a single line of code.
 
 ---
 
@@ -9,7 +9,7 @@ Read PROJECT_CONTEXT.md first. Always. Before writing a single line of code.
 ### Never Break These
 - **Do not suggest alternative libraries or frameworks.** The stack is locked. If you think something is a better choice, say so in a comment, then implement what is specified.
 - **Do not change the API response shapes.** The `/query` response shape is a contract between backend and frontend. Altering field names or types will silently break the UI.
-- **Do not change the embedding model.** `models/text-embedding-004` at 768 dimensions. If vector data already exists, changing this corrupts the entire index.
+- **Do not change the embedding model.** `gemini-embedding-2-preview` at 3072 dimensions (default). If vector data already exists, changing this corrupts the entire index. To switch to `EMBED_PROVIDER=ollama` (768-dim), delete `rag_storage/` first.
 - **Do not add auth, sessions, or middleware** unless explicitly asked.
 - **Do not create new files** without being asked. Add code to existing files first.
 - **Do not use `localStorage` or `sessionStorage`** in any frontend artifact.
@@ -29,7 +29,7 @@ Read PROJECT_CONTEXT.md first. Always. Before writing a single line of code.
 
 ### LLM Provider Rules
 - All LLM and embedding logic lives in `llm_provider.py` only. No other file imports from Groq, Gemini, or Ollama SDKs directly.
-- Provider fallback order: Groq → Gemini → Ollama. This order is not negotiable.
+- Provider fallback order: Gemini → Groq → Ollama. This order is not negotiable.
 - The provider is selected via the `PRIMARY_LLM_PROVIDER` env variable.
 
 ---

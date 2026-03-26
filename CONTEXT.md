@@ -10,10 +10,10 @@ Legal documents are deliberately complex. When an Indian user signs up for Truec
 - **RAG Engine**: LightRAG (`lightrag-hku` pip package) with `mode="mix"`
 - **Graph DB**: Neo4j (local, Desktop edition) via `Neo4JStorage`
 - **Vector DB**: NanoVectorDBStorage (LightRAG default, file-based)
-- **LLM — Primary**: Groq API (`llama-3.3-70b-versatile`)
-- **LLM — Fallback**: Google Gemini API (`gemini-2.0-flash`)
+- **LLM — Primary**: Google Gemini API (`gemini-flash-latest`)
+- **LLM — Fallback**: Groq API (`meta-llama/llama-4-scout-17b-16e-instruct`)
 - **LLM — Last Resort**: Ollama (local, only if both APIs fail)
-- **Embeddings**: Gemini (`models/text-embedding-004`, 768-dim) — FIXED, never change after first index
+- **Embeddings**: Gemini (`gemini-embedding-2-preview`, 3072-dim) — FIXED, never change after first index. Set `EMBED_PROVIDER=ollama` (`qwen3-embedding:0.6b`, 1024-dim) only if Gemini is unavailable; delete `rag_storage/` before switching providers.
 - **Backend**: FastAPI (Python 3.11+)
 - **Frontend**: React + TypeScript + Vite + Tailwind + Zustand
 - **Graph Viz**: `react-force-graph-2d`

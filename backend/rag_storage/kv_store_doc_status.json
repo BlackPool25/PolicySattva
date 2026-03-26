@@ -1,0 +1,29 @@
+{
+  "doc-4d9a9490ddfbcd752ff8d935cfbaf0a1": {
+    "status": "processed",
+    "chunks_count": 11,
+    "chunks_list": [
+      "chunk-213ee3bb1cd0d6176d1b0e09d1e074f9",
+      "chunk-a6a2a04f961190b8e28b3468acea227a",
+      "chunk-d4339c6a301c016cc58bd814099884b9",
+      "chunk-2b61376b01b3ccab88f836dbb4982dc4",
+      "chunk-1115ec114e6fde75453861a2a172649c",
+      "chunk-4ddf79dc59ef0b4ce42f460f1a37461d",
+      "chunk-8aed38a7977942d417e70183f3781890",
+      "chunk-608e283357e8e0c042c511ec80c42560",
+      "chunk-96388553612176fa40240431e62e4a71",
+      "chunk-e65f1e136ba2f375ca8e4fa63c63dc6e",
+      "chunk-3407b491738e5e3c5485ccdba19c93e5"
+    ],
+    "content_summary": "Legal   Terms and Conditions of Use     Intellectual Property Policy    Privacy Policy\nUser Guidelines    Paid Subscription Terms\nSpotify Terms of Use\nLast Updated: August 26, 2025\n1. Introduction\n2. The Spotify Service\n3. Your Use of the Spotify Ser...",
+    "content_length": 54711,
+    "created_at": "2026-03-26T05:04:30.778284+00:00",
+    "updated_at": "2026-03-26T05:09:32.053992+00:00",
+    "file_path": "/home/mugendev/Work/Projects/PolicySattva/backend/documents/Terms and Conditions of Use - Spotify.pdf",
+    "track_id": "insert_20260326_103430_d32d1687",
+    "metadata": {
+      "processing_start_time": 1774501470,
+      "processing_end_time": 1774501772
+    }
+  }
+}

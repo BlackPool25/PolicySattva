@@ -1,0 +1,12 @@
+lightrag-hku
+pymupdf
+python-dotenv
+httpx
+neo4j
+numpy
+fastapi
+uvicorn
+# LightRAG provider SDK dependencies — each is imported by lightrag.llm.*
+openai
+google-genai
+ollama
