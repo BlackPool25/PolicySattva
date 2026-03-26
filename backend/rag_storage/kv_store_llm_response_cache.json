@@ -322,5 +322,256 @@
     "create_time": 1774505227,
     "update_time": 1774505227,
     "_id": "mix:query:cb39f7c6492553091abd8afb70e8dfcf"
+  },
+  "mix:keywords:38f060fd5af9ae149221b9524effe82d": {
+    "return": "{\"high_level_keywords\": [\"Terms and conditions\", \"User privacy\", \"Privacy policy\"], \"low_level_keywords\": [\"Spotify\", \"Data protection\", \"Personal data\", \"User agreement\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What is the terms and conditions related to user privacy in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774511935,
+    "update_time": 1774511935,
+    "_id": "mix:keywords:38f060fd5af9ae149221b9524effe82d"
+  },
+  "mix:query:7856bef284a40c0a2ffd30fc2d8a4f52": {
+    "return": "The privacy of users on the Spotify platform is primarily governed by the **Spotify Privacy Policy**, which is a document explicitly incorporated into the overarching Spotify Terms of Use. This policy details the specific practices regarding how personal data is collected, used, shared, and protected by the organization. By signing up for or using the service, users agree to these terms, which establish the legal framework for their data handling.\n\nIn addition to the specific Privacy Policy, the Terms of Use mandate that users adhere to certain conduct standards regarding the privacy of others. According to the **Spotify User Guidelines**, individuals using the service must respect the privacy and intellectual property rights of third parties. This means users are prohibited from taking actions that would violate the privacy of other participants on the platform.\n\nSpotify also provides dedicated resources to help users manage their privacy settings and understand their rights. The **Safety & Privacy Center** serves as a digital resource where users can find tools and detailed information related to safety and privacy. Furthermore, the \"Agreements\" between Spotify and the user include various policies like the Platform Rules and User Guidelines to ensure the service remains a secure environment for all members.\n\n### References\n\n- [1] Terms and Conditions of Use - Spotify\n\n[ANALYSIS]\n{\"risk_level\": \"LOW\", \"graph_nodes_involved\": [\"Spotify Privacy Policy\", \"Safety & Privacy Center\", \"Spotify User Guidelines\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"To learn more about how Spotify collects, uses, shares and protects your personal data, please see the Spotify Privacy Policy.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"In using the Spotify Service, you must comply with the Spotify User Guidelines and the Platform Rules, as well as all applicable laws, rules, and regulations, and respect the intellectual property, privacy, and other rights of third parties.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What is the terms and conditions related to user privacy in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Terms and conditions, User privacy, Privacy policy",
+      "ll_keywords": "Spotify, Data protection, Personal data, User agreement",
+      "user_prompt": "\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774511945,
+    "update_time": 1774511945,
+    "_id": "mix:query:7856bef284a40c0a2ffd30fc2d8a4f52"
+  },
+  "mix:keywords:aa313901c61bd2049262ffe048e7b3e7": {
+    "return": "{\"high_level_keywords\": [\"User limitations\", \"Service restrictions\", \"Subscription terms\"], \"low_level_keywords\": [\"Spotify\", \"Free plan limits\", \"Premium features\", \"Device limit\", \"Skip limit\", \"Offline listening\", \"Download limit\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "what are user limitations on spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'Terms and Conditions of Use - Spotify.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774513093,
+    "update_time": 1774513093,
+    "_id": "mix:keywords:aa313901c61bd2049262ffe048e7b3e7"
+  },
+  "mix:query:95391f0c13d5288e51ee8adc6ba782fb": {
+    "return": "Based on the Spotify Terms of Use, users are subject to several limitations regarding eligibility, account usage, content distribution, and legal compliance.\n\n### Age and Residency Requirements\nTo use the Spotify Service, individuals must be at least 18 years old or be at least 13 years old with obtained parental or guardian consent. Users are also required to reside in the United States and must ensure that all registration and account information provided is true, accurate, and complete at all times [1].\n\n### Personal and Non-Commercial Use\nSpotify grants users a limited, non-exclusive, and revocable permission for the **personal, non-commercial use** of the service and its content. This access is strictly limited to the version of the Spotify Service offered in the user's country of residence. Users are explicitly prohibited from redistributing, selling, or transferring the Spotify Service or its Content to others [1].\n\n### Account Security and Restrictions\nUsers are responsible for maintaining the confidentiality of their username and password, which are for personal use only. Spotify reserves the right to reclaim or require a change of username for any reason. Furthermore, users are not permitted to assign the Terms of Use, nor can they transfer or sublicense their rights under the agreement to any third party [1].\n\n### Content and Conduct Limitations\nWhen posting \"User Content,\" individuals are solely responsible for ensuring they own the rights to that content and that it does not violate the Spotify User Guidelines, Platform Rules, or any applicable laws. Users must not imply any affiliation with or endorsement by Spotify or any artist without express written consent. Additionally, Spotify does not guarantee that the service will be compatible with all third-party applications or devices [1].\n\n### Export Control and Sanctions\nUsers are limited by international trade laws; they represent that they are not located in, or acting on behalf of, a country subject to territorial sanctions (Sanctioned Countries). Users must not be identified on government restricted party lists (such as those maintained by the E.U., U.K., or U.S.) and must comply with all applicable Trade Control Laws when using Spotify products [1].\n\n### References\n* [1] Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"LOW\", \"graph_nodes_involved\": [\"User\", \"Spotify Service\", \"Content\", \"Spotify User Guidelines\", \"Spotify Terms Of Use\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"we grant to you limited, non-exclusive, revocable permission to make personal, non-commercial use of the Spotify Service and the Content (collectively, \\\"Access\\\").\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"You may not assign these Terms, in whole or in part, nor transfer or sublicense your rights under these Terms to any third party.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"BY USING THE SPOTIFY SERVICE, YOU AFFIRM THAT YOU ARE 18 YEARS OR OLDER TO ENTER INTO THESE TERMS, OR, IF YOU ARE NOT, THAT YOU ARE 13 YEARS OR OLDER AND HAVE OBTAINED PARENTAL OR GUARDIAN CONSENT TO ENTER INTO THESE TERMS.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "what are user limitations on spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "User limitations, Service restrictions, Subscription terms",
+      "ll_keywords": "Spotify, Free plan limits, Premium features, Device limit, Skip limit, Offline listening, Download limit",
+      "user_prompt": "Only use information from the document 'Terms and Conditions of Use - Spotify.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774513106,
+    "update_time": 1774513106,
+    "_id": "mix:query:95391f0c13d5288e51ee8adc6ba782fb"
+  },
+  "mix:keywords:381bee16c9fb5885fa45f7db2c00701b": {
+    "return": "{\"high_level_keywords\": [\"Content usage policy\", \"Usage guidelines\", \"Platform terms of service\"], \"low_level_keywords\": [\"Spotify\", \"Copyright\", \"Digital rights management\", \"Intellectual property\", \"User content\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What is the content usage policy in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774513522,
+    "update_time": 1774513522,
+    "_id": "mix:keywords:381bee16c9fb5885fa45f7db2c00701b"
+  },
+  "mix:query:bcfe4fb65fe0d8c9dc51e3fcd5a7eb63": {
+    "return": "Spotify's content usage policy grants users a limited, non-exclusive, and revocable permission to access the Spotify Service and its associated materials, such as music, videos, and podcasts, for personal and non-commercial use. This access is strictly tied to the user's compliance with the platform's Terms of Use and is restricted to the version of the service provided in the user's country of residence. Users are explicitly prohibited from redistributing, selling, or transferring the Spotify Service or any of the content accessed through it [1].\n\nThe policy clarifies that Spotify software applications and their content are licensed to users rather than sold. Spotify and its licensors retain full ownership of these applications and materials even after they have been installed on a user's device. Furthermore, all Spotify trademarks, logos, domain names, and brand features remain the sole property of Spotify. Users are expected to abide by the Spotify User Guidelines and Platform Rules and are not permitted to use any part of the service or its content in ways not expressly allowed by the legal agreements [1].\n\nRegarding \"User Content\"—which includes any information, messages, or materials uploaded or created by users—the individual who posts the content remains the owner. However, they must grant Spotify a broad, worldwide, royalty-free, and irrevocable license to reproduce, modify, distribute, and display that content in connection with the Spotify Service. Users are solely responsible for ensuring they have the right to post such content and that it does not violate laws or the intellectual property rights of third parties. Additionally, users must not imply any false affiliation with or endorsement by Spotify or any artists without prior written consent [1].\n\nSpotify maintains the right, but is not obligated, to monitor and review User Content. The company reserves the authority to remove or disable access to any User Content for any reason, often without prior notification. Additionally, if a user provides \"Feedback\"—such as ideas or suggestions regarding the service—this information is treated as non-confidential, and Spotify may use it without any restriction or payment to the user [1].\n\n### References\n\n- [1] Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"MEDIUM\", \"graph_nodes_involved\": [\"Spotify Service\", \"User Content\", \"Content\", \"Spotify User Guidelines\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"we grant to you limited, non-exclusive, revocable permission to make personal, non-commercial use of the Spotify Service and the Content (collectively, \\\"Access\\\").\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"Spotify may, but has no obligation to, monitor or review User Content (whether publicly posted or privately shared). Spotify reserves the right to remove or disable access to any User Content for any or no reason.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"you hereby grant to Spotify a non-exclusive, transferable, sublicensable, royalty-free, fully paid, irrevocable, worldwide license to reproduce, make available, perform and display, translate, modify, create derivative works from, distribute, and otherwise use any such User Content\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What is the content usage policy in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Content usage policy, Usage guidelines, Platform terms of service",
+      "ll_keywords": "Spotify, Copyright, Digital rights management, Intellectual property, User content",
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774513562,
+    "update_time": 1774513562,
+    "_id": "mix:query:bcfe4fb65fe0d8c9dc51e3fcd5a7eb63"
+  },
+  "mix:keywords:6976124790144b7a6827b20eb4ac8f8d": {
+    "return": "{\"high_level_keywords\": [\"Usage policy\", \"Terms of service\", \"Legal guidelines\", \"User agreement\"], \"low_level_keywords\": [\"Spotify\", \"Streaming restrictions\", \"Acceptable use\", \"User conduct\", \"Account usage\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What is the usage policy in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774513637,
+    "update_time": 1774513637,
+    "_id": "mix:keywords:6976124790144b7a6827b20eb4ac8f8d"
+  },
+  "mix:query:69e5f81561ca5871cc5808ccfe80b112": {
+    "return": "The usage policy for Spotify grants users a limited, non-exclusive, and revocable permission to access the Spotify Service and its Content for personal, non-commercial use. Users are required to access the version of the service offered in their country of residence and are explicitly prohibited from redistributing, selling, or transferring the Spotify Service or any of its content. This access remains in effect until the relationship is terminated by either the user or Spotify. [1]\n\nRegarding User Content, the policy allows individuals to post, upload, or contribute materials such as messages and information. While users retain ownership of their content, they are solely responsible for everything they post. They must ensure that they have the right to post the content and that it does not violate Spotify’s terms, guidelines, or the rights of third parties. By posting, users grant Spotify a worldwide, royalty-free, and irrevocable license to use, modify, and display that content in connection with the Spotify Service. [1]\n\nUsers must adhere to the Spotify User Guidelines and Platform Rules to ensure the service remains enjoyable for all participants. Spotify reserves the authority to monitor or review User Content but is not obligated to do so. The platform also maintains the right to remove or disable access to any User Content for any reason without providing prior notification to the user. Furthermore, users are responsible for keeping their account credentials, such as usernames and passwords, confidential and are liable for all usage of their accounts. [1]\n\nAdditionally, the policy includes provisions for device resource usage. Users grant Spotify the right to utilize their device's processor, bandwidth, and storage hardware to facilitate the operation of the service. For those using the service via \"Brand Accounts\" on behalf of an organization, there are specific requirements to be transparent about endorsements and to avoid implying unauthorized commercial relationships or affiliations with artists or other users. [1]\n\n### References\n\n* [1] Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"LOW\", \"graph_nodes_involved\": [\"Spotify Service\", \"User Content\", \"Spotify User Guidelines\", \"Platform Rules\", \"User\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"we grant to you limited, non-exclusive, revocable permission to make personal, non-commercial use of the Spotify Service and the Content (collectively, \\\"Access\\\").\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"In using the Spotify Service, you must comply with the Spotify User Guidelines and the Platform Rules, as well as all applicable laws, rules, and regulations\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"Spotify reserves the right to remove or disable access to any User Content for any or no reason. Spotify may take these actions without prior notification to you.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What is the usage policy in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Usage policy, Terms of service, Legal guidelines, User agreement",
+      "ll_keywords": "Spotify, Streaming restrictions, Acceptable use, User conduct, Account usage",
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774513668,
+    "update_time": 1774513668,
+    "_id": "mix:query:69e5f81561ca5871cc5808ccfe80b112"
+  },
+  "mix:keywords:15a2d4bb91ad38adeb6a501fb4eac6e1": {
+    "return": "{\"high_level_keywords\": [\"Spotify\", \"User limits\", \"Subscription constraints\"], \"low_level_keywords\": [\"Device limit\", \"Account sharing\", \"Offline downloads\", \"Concurrent streaming\", \"Spotify Premium\", \"Spotify Free\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What is the user limits in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774514184,
+    "update_time": 1774514184,
+    "_id": "mix:keywords:15a2d4bb91ad38adeb6a501fb4eac6e1"
+  },
+  "mix:query:d3bdd14e5418e1970c7673a477732a62": {
+    "return": "Spotify enforces several user-related limits, including age requirements, residency restrictions, and usage permissions, to ensure the service is used in compliance with its legal terms.\n\n### Age and Eligibility Requirements\nTo access the Spotify Service, individuals must meet specific age criteria. Users must be at least 18 years old to enter into the binding Terms of Use independently. If an individual is under 18, they must be at least 13 years old and have obtained the consent of a parent or guardian to agree to the terms. Anyone under the age of 13 is strictly prohibited from registering as a user. For family-based subscriptions, the primary account holder (who must be the legal guardian) may enable a specialized \"kids experience\" for younger users.\n\n### Account and Residency Limits\nUsers are generally required to reside in the United States and must use the specific version of the Spotify Service offered in their country of residence. Furthermore, account credentials, such as usernames and passwords, are for personal use only. Users are responsible for maintaining the confidentiality of their login details and for all activities that occur through their account, including unauthorized use.\n\n### Usage and Subscription Plan Limits\nThe permission granted to use Spotify is limited to personal, non-commercial purposes. Users are explicitly prohibited from redistributing, selling, or transferring the Spotify Service or its content to others. Additionally, Spotify offers various subscription tiers with specific user capacity limits:\n*   **Premium Individual:** A subscription tier designed for a single individual user.\n*   **Premium Duo:** A subscription plan designed for two people residing at the same address.\n*   **Premium Family:** A subscription plan designed for up to six people residing at the same address.\n*   **Premium Student:** A discounted plan specifically for eligible students.\n\nUsers are also prohibited from assigning or sublicensing their rights under the agreement to any third party.\n\n### References\n\n* [1] Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"MEDIUM\", \"graph_nodes_involved\": [\"User\", \"Spotify Service\", \"Spotify Premium Family\", \"Spotify Premium Duo\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"BY USING THE SPOTIFY SERVICE, YOU AFFIRM THAT YOU ARE 18 YEARS OR OLDER TO ENTER INTO THESE TERMS, OR, IF YOU ARE NOT, THAT YOU ARE 13 YEARS OR OLDER AND HAVE OBTAINED PARENTAL OR GUARDIAN CONSENT TO ENTER INTO THESE TERMS.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"You agree that you will not redistribute, sell or transfer the Spotify Service or the Content.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What is the user limits in spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Spotify, User limits, Subscription constraints",
+      "ll_keywords": "Device limit, Account sharing, Offline downloads, Concurrent streaming, Spotify Premium, Spotify Free",
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "update_time": 1774514233,
+    "_id": "mix:query:d3bdd14e5418e1970c7673a477732a62"
+  },
+  "mix:keywords:9abe2d7f4c9b4eb1af9b59bd93823cc9": {
+    "return": "{\"high_level_keywords\": [\"Privacy policy\", \"User data protection\", \"Information privacy\", \"Digital privacy rights\"], \"low_level_keywords\": [\"Spotify\", \"User data\", \"Personal information\", \"Data collection\", \"Third-party sharing\", \"User consent\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What is privacy policy in spotify about users",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774514451,
+    "update_time": 1774514451,
+    "_id": "mix:keywords:9abe2d7f4c9b4eb1af9b59bd93823cc9"
+  },
+  "mix:query:65a3f2453d849c9716f42a3b549b39f5": {
+    "return": "The Spotify Privacy Policy is a specific document that outlines the platform's data handling practices. It describes in detail how personal data is collected, used, shared, and protected by Spotify. This policy is incorporated by reference into the overall Spotify Terms of Use, which govern the legal relationship between the organization and the user.\n\nBy signing up for or using the Spotify Service—which includes personalized streaming for music, videos, podcasts, and audiobooks—users agree to the terms and conditions, including those regarding privacy. The policy serves as a primary resource for users to understand how their personal information is managed during their interaction with the platform's various websites and software applications.\n\nFurthermore, Spotify provides a dedicated Safety & Privacy Center. This is a digital resource intended for users to find additional information and tools specifically related to safety and privacy. For users interested in how their \"User Content\" (such as messages or materials they post) is moderated or how third-party content is handled, Spotify also provides resources like the Platform Rules and Content Actions information.\n\n### References\n\n- [1] /home/mugendev/Work/Projects/PolicySattva/backend/documents/Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"LOW\", \"graph_nodes_involved\": [\"Spotify Privacy Policy\", \"User\", \"Spotify Service\", \"Safety & Privacy Center\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"To learn more about how Spotify collects, uses, shares and protects your personal data, please see the Spotify Privacy Policy.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"The Spotify Privacy Policy is a policy document that details how the organization handles user data and privacy.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What is privacy policy in spotify about users",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Privacy policy, User data protection, Information privacy, Digital privacy rights",
+      "ll_keywords": "Spotify, User data, Personal information, Data collection, Third-party sharing, User consent",
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774514471,
+    "update_time": 1774514471,
+    "_id": "mix:query:65a3f2453d849c9716f42a3b549b39f5"
   }
 }

@@ -63,6 +63,14 @@ class GraphResponse(BaseModel):
     stats: GraphStats
 
 
+class GraphNodeDetail(BaseModel):
+    id: str
+    label: str
+    description: str
+    type: str
+    source_files: list[str]
+
+
 app = FastAPI(title="PolicySattva API")
 
 app.add_middleware(
@@ -152,3 +160,12 @@ async def graph_subgraph_endpoint(nodes: str) -> GraphResponse:
     node_ids = [node.strip() for node in nodes.split(",") if node.strip()]
     graph = await graph_service.get_subgraph(node_ids)
     return GraphResponse(**graph)
+
+
+@app.get("/graph/node/{node_id}", response_model=GraphNodeDetail)
+async def graph_node_detail_endpoint(node_id: str) -> GraphNodeDetail:
+    try:
+        detail = await graph_service.get_node_details(node_id)
+        return GraphNodeDetail(**detail)
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Failed to fetch node details: {exc}") from exc

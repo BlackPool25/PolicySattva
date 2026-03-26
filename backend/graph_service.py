@@ -107,10 +107,9 @@ async def get_subgraph(node_ids: list[str]) -> dict[str, Any]:
         records, _, _ = await driver.execute_query(
             """
             MATCH (n) WHERE n.entity_id IN $node_ids
-            OPTIONAL MATCH (n)-[r]-(neighbor)
-            WHERE neighbor.entity_id IS NOT NULL
-            RETURN n.entity_id AS center,
-                   neighbor.entity_id AS neighbor_id,
+            OPTIONAL MATCH (n)-[r]-(m) WHERE m.entity_id IN $node_ids
+            RETURN n.entity_id AS node_id,
+                   m.entity_id AS connected_id,
                    type(r) AS rel_label,
                    startNode(r).entity_id AS src,
                    endNode(r).entity_id AS tgt
@@ -123,16 +122,16 @@ async def get_subgraph(node_ids: list[str]) -> dict[str, Any]:
         edges_set: set[tuple[str, str, str]] = set()
 
         for record in records:
-            center = record.get("center")
-            neighbor = record.get("neighbor_id")
+            node_id = record.get("node_id")
+            connected_id = record.get("connected_id")
             src = record.get("src")
             tgt = record.get("tgt")
             label = record.get("rel_label")
 
-            if center:
-                nodes_set.add(str(center))
-            if neighbor:
-                nodes_set.add(str(neighbor))
+            if node_id:
+                nodes_set.add(str(node_id))
+            if connected_id:
+                nodes_set.add(str(connected_id))
             if src and tgt and label:
                 edges_set.add((str(src), str(tgt), str(label)))
 
@@ -150,3 +149,46 @@ async def get_subgraph(node_ids: list[str]) -> dict[str, Any]:
     except Exception as exc:
         logger.exception("Failed to fetch subgraph: %s", exc)
         return _empty_graph()
+
+
+async def get_node_details(node_id: str) -> dict[str, Any]:
+    if not node_id:
+        return {"id": node_id, "label": node_id, "description": "", "type": "entity", "source_files": []}
+
+    try:
+        driver, target = await _get_driver_and_target()
+
+        records, _, _ = await driver.execute_query(
+            """
+            MATCH (n) WHERE n.entity_id = $node_id
+            RETURN n.entity_id AS id,
+                   n.description AS description,
+                   n.entity_type AS entity_type,
+                   n.source_id AS source_id
+            LIMIT 1
+            """,
+            node_id=node_id,
+            database_=target.database,
+        )
+
+        if not records:
+            return {"id": node_id, "label": node_id, "description": "", "type": "entity", "source_files": []}
+
+        record = records[0]
+        description = str(record.get("description") or "").strip()
+        entity_type = str(record.get("entity_type") or "entity").strip()
+        source_id = str(record.get("source_id") or "").strip()
+
+        # source_id is comma-separated chunk IDs; surface the first few as hints
+        source_hints = [s.strip() for s in source_id.split(",") if s.strip()][:3]
+
+        return {
+            "id": node_id,
+            "label": node_id,
+            "description": description,
+            "type": entity_type,
+            "source_files": source_hints,
+        }
+    except Exception as exc:
+        logger.exception("Failed to fetch node details for %s: %s", node_id, exc)
+        return {"id": node_id, "label": node_id, "description": "", "type": "entity", "source_files": []}

@@ -11,7 +11,7 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000
 
 const api = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000,
+  timeout: 180000,
 });
 
 export type DocumentStatus = "indexing" | "ready" | "failed";
@@ -55,6 +55,14 @@ export type GraphData = {
   };
 };
 
+export type NodeDetail = {
+  id: string;
+  label: string;
+  description: string;
+  type: string;
+  source_files: string[];
+};
+
 export type ChatItem = {
   id: string;
   role: "user" | "assistant";
@@ -62,6 +70,7 @@ export type ChatItem = {
   risk?: QueryResponse["risk_level"];
   sources?: SourceClause[];
   graphNodes?: string[];
+  docFilter?: string | null;
 };
 
 type AppStore = {
@@ -74,7 +83,7 @@ type AppStore = {
   setDocumentStatus: (docId: string, status: DocumentStatus) => void;
   setActiveDoc: (docId: string | null) => void;
   addUserMessage: (content: string) => void;
-  addAssistantMessage: (data: QueryResponse) => void;
+  addAssistantMessage: (data: QueryResponse, docFilter?: string | null) => void;
   clearChat: () => void;
   setGraphData: (data: GraphData) => void;
   setHighlightedNodes: (nodes: string[]) => void;
@@ -120,7 +129,7 @@ export const useAppStore = create<AppStore>((set) => ({
         { id: crypto.randomUUID(), role: "user", content },
       ],
     })),
-  addAssistantMessage: (data) =>
+  addAssistantMessage: (data, docFilter) =>
     set((state) => ({
       chatHistory: [
         ...state.chatHistory,
@@ -131,6 +140,7 @@ export const useAppStore = create<AppStore>((set) => ({
           risk: data.risk_level,
           sources: data.source_clauses,
           graphNodes: data.graph_nodes_involved,
+          docFilter: docFilter ?? null,
         },
       ],
     })),
@@ -171,5 +181,10 @@ export async function fetchSubgraph(nodes: string[]): Promise<GraphData> {
   const response = await api.get<GraphData>("/graph/subgraph", {
     params: { nodes: query },
   });
+  return response.data;
+}
+
+export async function fetchNodeDetails(nodeId: string): Promise<NodeDetail> {
+  const response = await api.get<NodeDetail>(`/graph/node/${encodeURIComponent(nodeId)}`);
   return response.data;
 }

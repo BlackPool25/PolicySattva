@@ -1,7 +1,7 @@
-import { useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FileText, PanelLeftClose, PanelLeftOpen, Send, Waypoints } from 'lucide-react';
-import { queryDocument, useAppStore } from '../lib/utils';
+import { type ChatItem, queryDocument, useAppStore } from '../lib/utils';
 
 export default function Chat() {
   const navigate = useNavigate();
@@ -28,6 +28,34 @@ export default function Chat() {
     [chatHistory]
   );
 
+  const renderSources = useCallback((message: ChatItem) => {
+    const all = message.sources ?? [];
+    if (all.length === 0) return null;
+
+    const docBaseName = message.docFilter
+      ? message.docFilter.split('/').pop()?.toLowerCase() ?? ''
+      : '';
+    const filtered = docBaseName
+      ? all.filter((s) => s.file.toLowerCase().includes(docBaseName))
+      : all;
+
+    if (filtered.length === 0) return null;
+
+    return (
+      <details className="mt-3 rounded-lg border border-border/50 bg-surface-muted p-3">
+        <summary className="text-xs font-bold text-primary cursor-pointer">Source Clauses</summary>
+        <div className="mt-2 space-y-2">
+          {filtered.map((source, index) => (
+            <div key={`${source.file}-${index}`} className="text-xs text-outline">
+              <p className="font-semibold text-foreground">{source.file}</p>
+              <p>{source.excerpt}</p>
+            </div>
+          ))}
+        </div>
+      </details>
+    );
+  }, []);
+
   const submitQuestion = async (event: React.FormEvent) => {
     event.preventDefault();
     const question = input.trim();
@@ -44,7 +72,7 @@ export default function Chat() {
         question,
         doc_filter: activeDocId,
       });
-      addAssistantMessage(response);
+      addAssistantMessage(response, activeDocId);
       requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }));
     } catch {
       addAssistantMessage({
@@ -52,7 +80,7 @@ export default function Chat() {
         risk_level: 'UNKNOWN',
         source_clauses: [],
         graph_nodes_involved: [],
-      });
+      }, activeDocId);
     } finally {
       setIsLoading(false);
     }
@@ -175,19 +203,7 @@ export default function Chat() {
                       </span>
                     )}
 
-                    {message.sources && message.sources.length > 0 && (
-                      <details className="mt-3 rounded-lg border border-border/50 bg-surface-muted p-3">
-                        <summary className="text-xs font-bold text-primary cursor-pointer">Source Clauses</summary>
-                        <div className="mt-2 space-y-2">
-                          {message.sources.map((source, index) => (
-                            <div key={`${source.file}-${index}`} className="text-xs text-outline">
-                              <p className="font-semibold text-foreground">{source.file}</p>
-                              <p>{source.excerpt}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </details>
-                    )}
+                    {renderSources(message)}
 
                     {message.graphNodes && message.graphNodes.length > 0 && (
                       <button

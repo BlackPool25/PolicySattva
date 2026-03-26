@@ -11,6 +11,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
     { label: 'Home', path: '/' },
     { label: 'Upload', path: '/upload' },
     { label: 'Chat', path: '/chat' },
+    { label: 'Graph', path: '/graph' },
   ];
 
   return (

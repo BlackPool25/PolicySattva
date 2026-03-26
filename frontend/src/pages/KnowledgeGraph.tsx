@@ -1,15 +1,18 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   ReactFlow,
+  ReactFlowProvider,
   Background,
   MarkerType,
+  useReactFlow,
   type Node,
   type Edge,
+  type NodeMouseHandler,
 } from '@xyflow/react';
-import { Download, Focus, ZoomIn, ZoomOut } from 'lucide-react';
+import { Download, Focus, X, ZoomIn, ZoomOut } from 'lucide-react';
 import '@xyflow/react/dist/style.css';
-import { fetchGraph, fetchSubgraph, useAppStore } from '../lib/utils';
+import { fetchGraph, fetchNodeDetails, fetchSubgraph, type NodeDetail, useAppStore } from '../lib/utils';
 
 function buildRadialNodes(rawNodes: Array<{ id: string; label: string; type?: string }>, highlighted: Set<string>): Node[] {
   const radius = 280;
@@ -37,6 +40,140 @@ function buildRadialNodes(rawNodes: Array<{ id: string; label: string; type?: st
   });
 }
 
+type FlowInnerProps = {
+  nodes: Node[];
+  edges: Edge[];
+  highlightedNodes: string[];
+  isLoading: boolean;
+  stats: { node_count: number; edge_count: number };
+};
+
+function FlowInner({ nodes, edges, highlightedNodes, isLoading, stats }: FlowInnerProps) {
+  const { zoomIn, zoomOut, fitView } = useReactFlow();
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [nodeDetail, setNodeDetail] = useState<NodeDetail | null>(null);
+  const [isFetchingDetail, setIsFetchingDetail] = useState(false);
+
+  const handleNodeClick: NodeMouseHandler = useCallback((_event, node) => {
+    setSelectedNodeId(node.id);
+    setNodeDetail(null);
+    setIsFetchingDetail(true);
+    fetchNodeDetails(node.id)
+      .then((detail) => setNodeDetail(detail))
+      .catch(() =>
+        setNodeDetail({
+          id: node.id,
+          label: node.id,
+          description: 'Details unavailable.',
+          type: 'entity',
+          source_files: [],
+        })
+      )
+      .finally(() => setIsFetchingDetail(false));
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedNodeId(null);
+    setNodeDetail(null);
+  }, []);
+
+  return (
+    <>
+      <ReactFlow
+        nodes={nodes}
+        edges={edges}
+        fitView
+        onNodeClick={handleNodeClick}
+        className="[&_.react-flow__attribution]:hidden"
+      >
+        <Background gap={38} size={1} color="#e1e3e4" />
+      </ReactFlow>
+
+      <aside className="absolute right-6 top-1/2 -translate-y-1/2 z-20 glass-panel rounded-3xl p-5 w-[290px] shadow-[0_16px_32px_rgba(17,24,39,0.05)] hidden md:block">
+        {selectedNodeId ? (
+          <>
+            <div className="flex items-center justify-between">
+              <h3 className="font-serif font-extrabold text-xl text-primary">Entity Detail</h3>
+              <button
+                type="button"
+                onClick={clearSelection}
+                className="text-outline hover:text-foreground transition-colors"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {isFetchingDetail ? (
+              <p className="mt-4 text-sm text-outline animate-pulse">Loading details…</p>
+            ) : nodeDetail ? (
+              <div className="mt-4 space-y-3 text-sm">
+                <p className="font-bold text-foreground break-words">{nodeDetail.label}</p>
+                {nodeDetail.type && nodeDetail.type !== 'entity' && (
+                  <span className="inline-block text-[10px] font-bold uppercase tracking-widest bg-emerald-50 text-primary px-2 py-1 rounded">
+                    {nodeDetail.type}
+                  </span>
+                )}
+                <p className="text-outline leading-relaxed">
+                  {nodeDetail.description || 'No description available.'}
+                </p>
+              </div>
+            ) : null}
+          </>
+        ) : (
+          <>
+            <h3 className="font-serif font-extrabold text-xl text-primary">Graph Insights</h3>
+            <div className="mt-4 space-y-2 text-sm text-outline">
+              <p>{stats.node_count} entities</p>
+              <p>{stats.edge_count} relationships</p>
+              {highlightedNodes.length > 0 && (
+                <p className="text-primary font-semibold">Subgraph mode active</p>
+              )}
+            </div>
+            <button
+              type="button"
+              className="mt-6 w-full rounded-full bg-primary text-white py-3 text-xs font-bold tracking-[0.14em] uppercase flex items-center justify-center gap-2 hover:brightness-110 transition-all"
+            >
+              <Download size={14} />
+              Export Analysis
+            </button>
+          </>
+        )}
+      </aside>
+
+      <div className="absolute right-8 bottom-8 z-20 glass-panel rounded-full p-2 flex flex-col gap-2 shadow-lg">
+        <button
+          type="button"
+          onClick={() => zoomIn({ duration: 300 })}
+          className="w-10 h-10 rounded-full hover:bg-surface-muted flex items-center justify-center text-primary"
+        >
+          <ZoomIn size={16} />
+        </button>
+        <button
+          type="button"
+          onClick={() => zoomOut({ duration: 300 })}
+          className="w-10 h-10 rounded-full hover:bg-surface-muted flex items-center justify-center text-primary"
+        >
+          <ZoomOut size={16} />
+        </button>
+        <div className="w-6 h-px bg-border mx-auto" />
+        <button
+          type="button"
+          onClick={() => fitView({ duration: 300 })}
+          className="w-10 h-10 rounded-full hover:bg-surface-muted flex items-center justify-center text-primary"
+        >
+          <Focus size={16} />
+        </button>
+      </div>
+
+      {isLoading && (
+        <div className="absolute inset-0 z-30 bg-white/60 backdrop-blur-[2px] flex items-center justify-center text-primary font-semibold">
+          Loading graph data...
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function KnowledgeGraph() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
@@ -50,6 +187,20 @@ export default function KnowledgeGraph() {
     [chatHistory]
   );
 
+  // Nodes from the most recent assistant message that included graph context.
+  // Used as a fallback when the user navigates directly to /graph without
+  // clicking "View in Graph" — so the page always shows a focused subgraph
+  // rather than the full 200+ node graph.
+  const lastQueryNodes = useMemo(() => {
+    const last = [...chatHistory]
+      .reverse()
+      .find((m) => m.role === 'assistant' && m.graphNodes && m.graphNodes.length > 0);
+    return last?.graphNodes ?? [];
+  }, [chatHistory]);
+
+  // Explicitly highlighted nodes take priority; fall back to last query's nodes.
+  const effectiveNodes = highlightedNodes.length > 0 ? highlightedNodes : lastQueryNodes;
+
   useEffect(() => {
     let mounted = true;
 
@@ -62,8 +213,8 @@ export default function KnowledgeGraph() {
       setIsLoading(true);
       try {
         const nextData =
-          highlightedNodes.length > 0
-            ? await fetchSubgraph(highlightedNodes)
+          effectiveNodes.length > 0
+            ? await fetchSubgraph(effectiveNodes)
             : await fetchGraph();
         if (mounted) {
           setGraphData(nextData);
@@ -79,7 +230,7 @@ export default function KnowledgeGraph() {
     return () => {
       mounted = false;
     };
-  }, [hasCompletedChat, highlightedNodes, setGraphData]);
+  }, [hasCompletedChat, effectiveNodes, setGraphData]);
 
   if (!hasCompletedChat) {
     return (
@@ -101,7 +252,7 @@ export default function KnowledgeGraph() {
     );
   }
 
-  const highlightedSet = useMemo(() => new Set(highlightedNodes), [highlightedNodes]);
+  const highlightedSet = useMemo(() => new Set(effectiveNodes), [effectiveNodes]);
 
   const nodes: Node[] = useMemo(
     () => buildRadialNodes(graphData.nodes, highlightedSet),
@@ -136,48 +287,15 @@ export default function KnowledgeGraph() {
         <div className="absolute top-[10%] left-[18%] w-[24rem] h-[24rem] rounded-full bg-emerald-200/30 blur-[110px]" />
         <div className="absolute bottom-[8%] right-[20%] w-[18rem] h-[18rem] rounded-full bg-slate-200/40 blur-[100px]" />
       </div>
-
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        fitView
-        className="[&_.react-flow__attribution]:hidden"
-      >
-        <Background gap={38} size={1} color="#e1e3e4" />
-      </ReactFlow>
-
-      <aside className="absolute right-6 top-1/2 -translate-y-1/2 z-20 glass-panel rounded-3xl p-5 w-[290px] shadow-[0_16px_32px_rgba(17,24,39,0.05)] hidden md:block">
-        <h3 className="font-serif font-extrabold text-xl text-primary">Graph Insights</h3>
-        <div className="mt-4 space-y-2 text-sm text-outline">
-          <p>{graphData.stats.node_count} entities</p>
-          <p>{graphData.stats.edge_count} relationships</p>
-          {highlightedNodes.length > 0 && <p className="text-primary font-semibold">Subgraph mode active</p>}
-        </div>
-
-        <button className="mt-6 w-full rounded-full bg-primary text-white py-3 text-xs font-bold tracking-[0.14em] uppercase flex items-center justify-center gap-2 hover:brightness-110 transition-all">
-          <Download size={14} />
-          Export Analysis
-        </button>
-      </aside>
-
-      <div className="absolute right-8 bottom-8 z-20 glass-panel rounded-full p-2 flex flex-col gap-2 shadow-lg">
-        <button className="w-10 h-10 rounded-full hover:bg-surface-muted flex items-center justify-center text-primary">
-          <ZoomIn size={16} />
-        </button>
-        <button className="w-10 h-10 rounded-full hover:bg-surface-muted flex items-center justify-center text-primary">
-          <ZoomOut size={16} />
-        </button>
-        <div className="w-6 h-px bg-border mx-auto" />
-        <button className="w-10 h-10 rounded-full hover:bg-surface-muted flex items-center justify-center text-primary">
-          <Focus size={16} />
-        </button>
-      </div>
-
-      {isLoading && (
-        <div className="absolute inset-0 z-30 bg-white/60 backdrop-blur-[2px] flex items-center justify-center text-primary font-semibold">
-          Loading graph data...
-        </div>
-      )}
+      <ReactFlowProvider>
+        <FlowInner
+          nodes={nodes}
+          edges={edges}
+          highlightedNodes={effectiveNodes}
+          isLoading={isLoading}
+          stats={graphData.stats}
+        />
+      </ReactFlowProvider>
     </div>
   );
 }
