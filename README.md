@@ -64,3 +64,39 @@ Run the Phase 1 smoke test:
 ```bash
 cd backend && python smoke_test.py
 ```
+
+## Phase 2 (FastAPI Backend)
+
+Install backend dependencies with `uv`:
+
+```bash
+uv pip install -r backend/requirements.txt
+```
+
+Start the API server:
+
+```bash
+cd backend && uvicorn main:app --reload --port 8000
+```
+
+Test endpoints with `curl`:
+
+```bash
+# Ingest
+curl -X POST http://localhost:8000/ingest \
+	-F "file=@documents/truecaller_tos.pdf"
+
+# Poll indexing status
+curl http://localhost:8000/ingest/status/truecaller_tos.pdf
+
+# Query
+curl -X POST http://localhost:8000/query \
+	-H "Content-Type: application/json" \
+	-d '{"question": "Does Truecaller share my contacts?", "doc_filter": null}'
+
+# Full graph
+curl http://localhost:8000/graph
+
+# Subgraph for specific nodes
+curl "http://localhost:8000/graph/subgraph?nodes=data_sharing,third_party,contacts"
+```

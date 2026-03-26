@@ -165,7 +165,7 @@ async def index_document(pdf_path: str) -> None:
         await rag.finalize_storages()
 
 
-async def query(question: str) -> dict[str, object]:
+async def query(question: str, doc_filter: str | None = None) -> dict[str, object]:
     """Query the indexed documents and return a Phase 2-ready structured response.
 
     Returns:
@@ -179,12 +179,22 @@ async def query(question: str) -> dict[str, object]:
     rag = _build_rag()
     await rag.initialize_storages()
     try:
+        # QueryParam.ids was removed in lightrag-hku v1.4.11. When doc_filter
+        # is set we inject a constraint into user_prompt instead, which the LLM
+        # honours when deciding which source clauses to cite.
+        effective_prompt = _ANALYSIS_PROMPT
+        if doc_filter:
+            effective_prompt = (
+                f"Only use information from the document '{doc_filter}'."
+                + effective_prompt
+            )
+
         raw_response = await rag.aquery(
             question,
             param=QueryParam(
                 mode="mix",
                 only_need_context=False,
-                user_prompt=_ANALYSIS_PROMPT,
+                user_prompt=effective_prompt,
             ),
         )
         raw_str = raw_response if isinstance(raw_response, str) else str(raw_response)
