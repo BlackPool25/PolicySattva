@@ -573,5 +573,89 @@
     "create_time": 1774514471,
     "update_time": 1774514471,
     "_id": "mix:query:65a3f2453d849c9716f42a3b549b39f5"
+  },
+  "mix:keywords:a6b7b9d96012a28ae6854b1f11225fdd": {
+    "return": "{\"high_level_keywords\": [\"Music streaming services\", \"Service limitations\", \"Platform constraints\"], \"low_level_keywords\": [\"Spotify\", \"Free tier\", \"Audio quality\", \"Ads\", \"Offline listening\", \"Skip limits\", \"Geographic availability\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What are the limtations of spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774514805,
+    "update_time": 1774514805,
+    "_id": "mix:keywords:a6b7b9d96012a28ae6854b1f11225fdd"
+  },
+  "mix:query:840846bf371295dab5e20e772333aed8": {
+    "return": "Based on the provided documentation, the limitations of the Spotify service include operational constraints, content availability restrictions, technical disclaimers, and specific user eligibility requirements.\n\n### Operational and Service Modifications\nThe Spotify Service is not guaranteed to be available at all times. It may experience temporary interruptions due to maintenance, technical difficulties, testing, or updates required to comply with regulatory changes. Spotify reserves the right to change its service offerings at any time without notice or liability. This includes the right to modify, suspend, or permanently stop providing specific features, functions, or entire subscription plans. Additionally, Spotify is not liable for service outages caused by government authorities, third parties, or events beyond its control, such as internet failures.\n\n### Content and Advertising Restrictions\nUsers do not have a guaranteed right to any specific media. Spotify and content owners may remove songs, videos, podcasts, or audiobooks from the platform without prior notice. The selection and placement of content are often influenced by commercial considerations and third-party agreements. Furthermore, even within certain licensed content like podcasts or shows, advertising and promotional messages may be integrated.\n\n### Technical and Warranty Disclaimers\nThe service is provided on an \"as is\" and \"as available\" basis, meaning Spotify disclaims all express, implied, or statutory warranties, including those for merchantability or fitness for a particular purpose. Specific technical limitations include:\n*   **Malware:** Spotify does not warrant that the service is free of malware or other harmful components.\n*   **Compatibility:** There is no guarantee that the service will be compatible with all third-party applications or devices.\n*   **Explicit Content:** While explicit content filtering features are provided, they may not filter all explicit material, and Spotify advises users not to rely on them entirely.\n\n### Geographic and Usage Limits\nAccess to the Spotify Service is strictly limited based on residency and age. Users must reside in the United States and be at least 18 years old, or at least 13 years old with parental or guardian consent. Access is granted only for personal, non-commercial use; users are prohibited from redistributing, selling, or transferring the service or its content. Furthermore, Spotify's aggregate liability for claims is generally capped at the greater of $30.00 or the total amount paid by the user in the twelve months prior to a claim.\n\n### References\n\n* [1] Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH\", \"graph_nodes_involved\": [\"Spotify Service\", \"Content\", \"Explicit Content Filtering Features\", \"Paid Subscription\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"Spotify reserves the right to change our Spotify Service offerings and their availability from time to time, without notice or liability to you.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"THE SPOTIFY SERVICE IS PROVIDED \\\"AS IS\\\" AND \\\"AS AVAILABLE,\\\" WITHOUT ANY WARRANTIES OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"Spotify has no obligation to provide any specific content through the Spotify Service, and Spotify or the applicable owners may remove access to particular songs, videos, podcasts, audiobooks and other Content without notice.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What are the limtations of spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Music streaming services, Service limitations, Platform constraints",
+      "ll_keywords": "Spotify, Free tier, Audio quality, Ads, Offline listening, Skip limits, Geographic availability",
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774514825,
+    "update_time": 1774514825,
+    "_id": "mix:query:840846bf371295dab5e20e772333aed8"
+  },
+  "mix:keywords:2ac02798a287dad1eeacbd9b5c776530": {
+    "return": "{\"high_level_keywords\": [\"Music streaming services\", \"Service limitations\", \"User experience\"], \"low_level_keywords\": [\"Spotify\", \"Audio quality\", \"Offline playback\", \"Ads\", \"Free tier limitations\", \"Library size\"]}",
+    "cache_type": "keywords",
+    "chunk_id": null,
+    "original_prompt": "What are the limitations of spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774515221,
+    "update_time": 1774515221,
+    "_id": "mix:keywords:2ac02798a287dad1eeacbd9b5c776530"
+  },
+  "mix:query:a68fa9611e190f613e18b7e4c66e0e4a": {
+    "return": "Spotify's service is subject to several operational, technical, and legal limitations as outlined in its Terms of Use. One of the primary limitations is the platform's right to modify or discontinue its offerings. Spotify reserves the right to change its service offerings and their availability at any time without notice or liability. This includes temporary interruptions for maintenance, testing, or technical difficulties, as well as the right to modify, suspend, or stop providing specific functions, features, or subscription plans [1].\n\nRegarding content availability, Spotify does not guarantee that any specific content will be provided. The service acts as a dynamic platform where songs, videos, podcasts, and audiobooks may be removed by Spotify or the content owners at any time without notice [1]. Additionally, Spotify makes no guarantees regarding the compatibility of the service with third-party applications or specific devices like mobile handsets, tablets, or wearable devices [1].\n\nThe service is provided on an \"as is\" and \"as available\" basis. This means Spotify disclaims all warranties, including implied warranties of merchantability, fitness for a particular purpose, and non-infringement. Specifically, Spotify does not warrant that the service or its content is free of malware or other harmful components [1]. While the platform provides explicit content filtering features, it explicitly states that users should not rely on these to filter all explicit content, as some may still be served [1].\n\nUsage is also geographically and legally restricted. Users are granted only a limited, revocable permission for personal, non-commercial use of the service and its content. Users are strictly prohibited from redistributing, selling, or transferring content [1]. Furthermore, users must reside in the United States and meet specific age requirements (18 years or older, or 13 with parental consent) to be eligible to use the service [1].\n\nIn terms of liability, Spotify limits its responsibility for problems or dissatisfaction. The terms state that the sole and exclusive remedy for any issues is to uninstall the software and stop using the service. For claims that do proceed, Spotify’s aggregate liability is generally capped at the greater of $30.00 or the total amount paid by the user to Spotify during the twelve months prior to the first claim [1].\n\n### References\n\n* [1] Terms and Conditions of Use - Spotify.pdf\n\n[ANALYSIS]\n{\"risk_level\": \"MEDIUM\", \"graph_nodes_involved\": [\"Spotify Service\", \"Content\", \"Spotify Terms\", \"User\", \"Malware\"], \"source_clauses\": [{\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"Spotify has no obligation to provide any specific content through the Spotify Service, and Spotify or the applicable owners may remove access to particular songs, videos, podcasts, audiobooks and other Content without notice.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"NEITHER SPOTIFY NOR ANY OWNER OF CONTENT WARRANTS THAT THE SPOTIFY SERVICE OR CONTENT IS FREE OF MALWARE OR OTHER HARMFUL COMPONENTS.\"}, {\"file\": \"Terms and Conditions of Use - Spotify.pdf\", \"excerpt\": \"IN NO EVENT WILL SPOTIFY... BE LIABLE FOR... AGGREGATE LIABILITY FOR ALL CLAIMS RELATING TO THE SPOTIFY SERVICE... MORE THAN THE GREATER OF (A) THE AMOUNTS PAID BY YOU TO SPOTIFY DURING THE TWELVE MONTHS PRIOR TO THE FIRST CLAIM; OR (B) $30.00.\"}]}\n[/ANALYSIS]",
+    "cache_type": "query",
+    "chunk_id": null,
+    "original_prompt": "What are the limitations of spotify",
+    "queryparam": {
+      "mode": "mix",
+      "response_type": "Multiple Paragraphs",
+      "top_k": 40,
+      "chunk_top_k": 20,
+      "max_entity_tokens": 6000,
+      "max_relation_tokens": 8000,
+      "max_total_tokens": 30000,
+      "hl_keywords": "Music streaming services, Service limitations, User experience",
+      "ll_keywords": "Spotify, Audio quality, Offline playback, Ads, Free tier limitations, Library size",
+      "user_prompt": "Only use information from the document 'truecaller_tos.pdf'.\n\nAfter your answer, append this exact block — nothing after it:\n\n[ANALYSIS]\n{\"risk_level\": \"HIGH|MEDIUM|LOW\", \"graph_nodes_involved\": [\"entity1\", \"entity2\"], \"source_clauses\": [{\"file\": \"filename.pdf\", \"excerpt\": \"exact quoted text from the document\"}]}\n[/ANALYSIS]\n\nRules:\n- risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.\n- graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.\n- source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.\n- Output valid JSON only inside the [ANALYSIS] block.",
+      "enable_rerank": true
+    },
+    "create_time": 1774515246,
+    "update_time": 1774515246,
+    "_id": "mix:query:a68fa9611e190f613e18b7e4c66e0e4a"
   }
 }
