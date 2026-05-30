@@ -5,3 +5,7 @@ dist/
 frontend/dist/
 .env
 backend/.env
+__pycache__/
+*.pyc
+backend/rag_storage/
+backend/documents/
