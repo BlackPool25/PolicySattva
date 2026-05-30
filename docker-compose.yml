@@ -13,6 +13,9 @@ services:
       - ./backend/documents:/app/documents
     env_file:
       - .env
+    environment:
+      - REDIS_HOST=host.docker.internal
+      - REDIS_PORT=6380
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:

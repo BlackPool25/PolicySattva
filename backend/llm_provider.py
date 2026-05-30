@@ -261,6 +261,13 @@ def _ollama_cost_profile(keyword_extraction: bool, kwargs: dict[str, object]) ->
     return next_kwargs
 
 
+_ENTITY_VALIDATION_INSTRUCTION = (
+    "\n\nIMPORTANT: Only extract entities that appear VERBATIM in the input text above. "
+    "Do NOT invent, infer, or hallucinate entities. Every entity name must be directly "
+    "present word-for-word in the provided text. If no entities match this criterion, "
+    "return an empty list."
+)
+
 def _clean_extraction_response(output: str) -> str:
     """Clean the extraction output to remove markdown code blocks and intro text.
 
@@ -316,6 +323,8 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
     ) -> str:
         try:
             system_prompt = _process_system_prompt(system_prompt)
+            if not keyword_extraction and system_prompt:
+                system_prompt += _ENTITY_VALIDATION_INSTRUCTION
             request_kwargs = {**_gemini_cost_profile(keyword_extraction), **kwargs}
             start = time.perf_counter()
             res = await gemini_model_complete(
@@ -345,10 +354,12 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         system_prompt: str | None,
         history_messages: list[dict],
         keyword_extraction: bool,
-        **kwargs: object,
+        **kwargs: str,
     ) -> str:
         try:
             system_prompt = _process_system_prompt(system_prompt)
+            if not keyword_extraction and system_prompt:
+                system_prompt += _ENTITY_VALIDATION_INSTRUCTION
             request_kwargs = {**_openai_like_cost_profile(keyword_extraction), **kwargs}
             start = time.perf_counter()
             res = await openai_complete_if_cache(
@@ -386,6 +397,8 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         # model_name here or the ollama client will reject it.
         try:
             system_prompt = _process_system_prompt(system_prompt)
+            if not keyword_extraction and system_prompt:
+                system_prompt += _ENTITY_VALIDATION_INSTRUCTION
             request_kwargs = _ollama_cost_profile(keyword_extraction, kwargs)
             request_kwargs["think"] = False
             options = request_kwargs.get("options", {})

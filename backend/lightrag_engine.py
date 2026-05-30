@@ -13,6 +13,7 @@ from lightrag.kg.neo4j_impl import Neo4JStorage as _Neo4JStorage
 from document_loader import load_pdf
 from graph_service import get_subgraph_for_doc
 from llm_provider import get_active_rag_storage_dir, get_embedding_func, get_llm_func
+from request_queue import enqueue, TaskPriority
 
 
 load_dotenv(override=True)
@@ -292,6 +293,61 @@ async def _prewarm_ollama() -> None:
         logger.warning("Ollama pre-warm failed (non-fatal): %s", exc)
 
 
+def _validate_entities_against_text(company_id: str, source_text: str) -> int:
+    """Remove hallucinated entities from kv_store that don't appear in source text.
+
+    LightRAG's LLM-based entity extraction sometimes generates entities not
+    present in the source document. This function filters them out by checking
+    each entity name against the original text.
+
+    Returns the number of entities removed.
+    """
+    text_lower = source_text.lower()
+    company_dir = get_active_rag_storage_dir() / company_id
+    full_entities_path = company_dir / "kv_store_full_entities.json"
+    if not full_entities_path.exists():
+        return 0
+
+    try:
+        with open(full_entities_path, encoding="utf-8") as f:
+            entities_data = json.load(f)
+    except (json.JSONDecodeError, OSError) as exc:
+        logger.warning("Entity validation failed to read kv_store: %s", exc)
+        return 0
+
+    total_removed = 0
+    changed = False
+    for doc_key, doc_data in entities_data.items():
+        if not isinstance(doc_data, dict):
+            continue
+        entity_names = doc_data.get("entity_names", [])
+        if not isinstance(entity_names, list):
+            continue
+        filtered = []
+        for name in entity_names:
+            name_str = str(name).strip()
+            if not name_str:
+                continue
+            if name_str.lower() in text_lower:
+                filtered.append(name)
+            else:
+                total_removed += 1
+                logger.debug("Removed hallucinated entity '%s' from doc %s", name_str, doc_key)
+        if len(filtered) != len(entity_names):
+            doc_data["entity_names"] = filtered
+            changed = True
+
+    if changed:
+        try:
+            with open(full_entities_path, "w", encoding="utf-8") as f:
+                json.dump(entities_data, f, indent=2, ensure_ascii=False)
+        except OSError as exc:
+            logger.warning("Entity validation failed to write kv_store: %s", exc)
+            return 0
+
+    return total_removed
+
+
 async def index_document(pdf_path: str, company_id: str) -> None:
     """Index a PDF into the company-scoped LightRAG workspace.
 
@@ -333,6 +389,15 @@ async def index_document(pdf_path: str, company_id: str) -> None:
             company_id,
             finalize_elapsed,
             overall_elapsed,
+        )
+
+    validate_start = time.perf_counter()
+    removed = _validate_entities_against_text(company_id, text)
+    validate_elapsed = time.perf_counter() - validate_start
+    if removed:
+        logger.info(
+            "Entity validation removed %d hallucinated entities company=%s elapsed=%.3fs",
+            removed, company_id, validate_elapsed,
         )
 
 

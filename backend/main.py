@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import json
 import os
@@ -11,6 +12,7 @@ from pydantic import BaseModel
 import graph_service
 import lightrag_engine
 from llm_provider import get_active_rag_storage_dir
+from request_queue import enqueue, start_worker, stop_all_workers, TaskPriority
 
 
 logger = logging.getLogger(__name__)
@@ -99,6 +101,30 @@ class GraphNodeDetail(BaseModel):
 
 app = FastAPI(title="PolicySattva API")
 
+_indexing_worker_task: asyncio.Task | None = None
+
+
+@app.on_event("startup")
+async def _startup_queue_worker() -> None:
+    global _indexing_worker_task
+    try:
+        _indexing_worker_task = await start_worker("indexing", _indexing_worker_handler, poll_interval=1.0)
+        logger.info("Redis indexing worker started")
+    except Exception as exc:
+        logger.warning("Failed to start Redis indexing worker (non-fatal): %s", exc)
+
+
+@app.on_event("shutdown")
+async def _shutdown_queue_worker() -> None:
+    global _indexing_worker_task
+    if _indexing_worker_task is not None:
+        _indexing_worker_task.cancel()
+        try:
+            await _indexing_worker_task
+        except asyncio.CancelledError:
+            pass
+    await stop_all_workers()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "http://localhost:3000"],
@@ -145,34 +171,54 @@ def _safe_load_json(path: Path) -> dict:
 
 
 def _load_documents_for_company(company_id: str) -> list[DocumentListItem]:
-    """Load all indexed documents for a single company from its storage dir.
+    """Load all indexed documents for a single company.
 
-    LightRAG stores files at <base_dir>/<company_id>/ when workspace=company_id.
+    Reads from MongoDB when MONGO_URI is set, otherwise falls back to local JSON files.
     """
-    company_dir = get_active_rag_storage_dir() / company_id
-    full_docs = _safe_load_json(company_dir / "kv_store_full_docs.json")
-    doc_status = _safe_load_json(company_dir / "kv_store_doc_status.json")
-    docs: list[DocumentListItem] = []
-
-    for doc_key, doc_data in full_docs.items():
-        if not isinstance(doc_data, dict):
-            continue
-        file_path = str(doc_data.get("file_path", "")).strip()
-        if not file_path:
-            continue
-        doc_name = Path(file_path).name
-        status_data = doc_status.get(doc_key, {}) if isinstance(doc_status, dict) else {}
-        status = _normalize_doc_status(
-            status_data.get("status") if isinstance(status_data, dict) else None
-        )
-        docs.append(DocumentListItem(id=doc_key, name=doc_name, status=status, company_id=company_id))
+    mongo_uri = os.getenv("MONGO_URI", "").strip()
+    if mongo_uri:
+        from pymongo import MongoClient
+        database_name = os.getenv("MONGO_DATABASE", "policysattva").strip()
+        client = MongoClient(mongo_uri)
+        db = client[database_name]
+        full_docs_coll = db[f"{company_id}_full_docs"]
+        doc_status_coll = db[f"{company_id}_doc_status"]
+        docs: list[DocumentListItem] = []
+        for doc in full_docs_coll.find():
+            doc_key = doc.get("_id", "")
+            file_path = str(doc.get("file_path", "")).strip()
+            if not file_path:
+                continue
+            doc_name = Path(file_path).name
+            status_doc = doc_status_coll.find_one({"_id": doc_key})
+            status = _normalize_doc_status(
+                status_doc.get("status") if status_doc else None
+            )
+            docs.append(DocumentListItem(id=doc_key, name=doc_name, status=status, company_id=company_id))
+        client.close()
+    else:
+        company_dir = get_active_rag_storage_dir() / company_id
+        full_docs = _safe_load_json(company_dir / "kv_store_full_docs.json")
+        doc_status = _safe_load_json(company_dir / "kv_store_doc_status.json")
+        docs: list[DocumentListItem] = []
+        for doc_key, doc_data in full_docs.items():
+            if not isinstance(doc_data, dict):
+                continue
+            file_path = str(doc_data.get("file_path", "")).strip()
+            if not file_path:
+                continue
+            doc_name = Path(file_path).name
+            status_data = doc_status.get(doc_key, {}) if isinstance(doc_status, dict) else {}
+            status = _normalize_doc_status(
+                status_data.get("status") if isinstance(status_data, dict) else None
+            )
+            docs.append(DocumentListItem(id=doc_key, name=doc_name, status=status, company_id=company_id))
 
     # Overlay in-flight status for this company
     for key, status in indexing_status.items():
         comp_id, doc_name = key.split("/", 1) if "/" in key else ("unknown", key)
         if comp_id != company_id:
             continue
-        # Find and update existing entry or add a placeholder
         for doc in docs:
             if doc.name == doc_name:
                 doc.status = _normalize_doc_status(status)
@@ -189,16 +235,26 @@ def _load_documents_for_company(company_id: str) -> list[DocumentListItem]:
 
 
 def _load_all_documents() -> list[DocumentListItem]:
-    """Scan all company subdirs under the active embedding namespace."""
-    base = get_active_rag_storage_dir()
-    if not base.exists():
-        return []
+    """Load documents across all companies from Mongo or local JSON."""
+    mongo_uri = os.getenv("MONGO_URI", "").strip()
+    if mongo_uri:
+        from pymongo import MongoClient
+        database_name = os.getenv("MONGO_DATABASE", "policysattva").strip()
+        client = MongoClient(mongo_uri)
+        db = client[database_name]
+        companies = set()
+        for coll_name in db.list_collection_names():
+            if coll_name.endswith("_full_docs"):
+                companies.add(coll_name[: -len("_full_docs")])
+        client.close()
+    else:
+        base = get_active_rag_storage_dir()
+        if not base.exists():
+            return []
+        companies = {d.name for d in base.iterdir() if d.is_dir()}
 
     all_docs: list[DocumentListItem] = []
-    for company_dir in sorted(base.iterdir()):
-        if not company_dir.is_dir():
-            continue
-        company_id = company_dir.name
+    for company_id in sorted(companies):
         all_docs.extend(_load_documents_for_company(company_id))
 
     # Overlay in-flight status
@@ -228,6 +284,15 @@ async def _run_indexing(company_id: str, doc_id: str, saved_path: str) -> None:
     except Exception as exc:
         indexing_status[status_key] = "failed"
         logger.exception("Indexing failed company=%s doc=%s: %s", company_id, doc_id, exc)
+
+
+async def _indexing_worker_handler(task_data: dict) -> None:
+    payload = task_data.get("payload", {})
+    company_id = payload.get("company_id", "")
+    doc_id = payload.get("doc_id", "")
+    saved_path = payload.get("saved_path", "")
+    if company_id and doc_id and saved_path:
+        await _run_indexing(company_id, doc_id, saved_path)
 
 
 # ---------------------------------------------------------------------------
@@ -274,7 +339,18 @@ async def ingest(
         await file.close()
 
     indexing_status[status_key] = "indexing"
-    background_tasks.add_task(_run_indexing, safe_company, doc_id, saved_path)
+
+    try:
+        await enqueue(
+            "indexing",
+            {"company_id": safe_company, "doc_id": doc_id, "saved_path": saved_path},
+            priority=TaskPriority.NORMAL,
+            max_retries=2,
+        )
+        logger.info("Indexing task enqueued company=%s doc=%s", safe_company, doc_id)
+    except Exception as exc:
+        logger.warning("Redis queue unavailable, falling back to BackgroundTask: %s", exc)
+        background_tasks.add_task(_run_indexing, safe_company, doc_id, saved_path)
 
     return IngestResponse(status="indexing", doc_id=doc_id, message=f"Indexing started for company '{safe_company}'")
 
@@ -304,32 +380,63 @@ async def list_documents_endpoint(company_id: str | None = None) -> list[Documen
 
 @app.get("/workspaces", response_model=list[str])
 async def get_workspaces_endpoint() -> list[str]:
-    """List all active company/workspace IDs that have indexed directories on disk."""
-    base = get_active_rag_storage_dir()
-    if not base.exists():
-        return ["default_company"]
+    """List all active company/workspace IDs."""
+    mongo_uri = os.getenv("MONGO_URI", "").strip()
+    if mongo_uri:
+        from pymongo import MongoClient
+        database_name = os.getenv("MONGO_DATABASE", "policysattva").strip()
+        client = MongoClient(mongo_uri)
+        db = client[database_name]
+        companies = set()
+        for coll_name in db.list_collection_names():
+            if coll_name.endswith("_full_docs"):
+                companies.add(coll_name[: -len("_full_docs")])
+        client.close()
+    else:
+        base = get_active_rag_storage_dir()
+        if not base.exists():
+            return ["default_company"]
+        companies = {f.name for f in base.iterdir() if f.is_dir()}
 
-    companies = [f.name for f in base.iterdir() if f.is_dir()]
     if "default_company" not in companies:
-        companies.insert(0, "default_company")
-    return sorted(list(set(companies)))
+        companies.add("default_company")
+    return sorted(companies)
+
+
+async def _resolve_doc_id(doc_id: str, company_id: str) -> str:
+    """Resolve a document ID that may be a filename to the internal UUID key.
+
+    The ingest endpoint stores docs with filename as the key in indexing_status,
+    while LightRAG's internal storage uses UUID keys (doc-abc123...).
+    This helper resolves filename -> UUID so callers can use either format.
+    """
+    if doc_id.startswith("doc-"):
+        return doc_id
+    for doc in _load_documents_for_company(company_id):
+        if doc.name == doc_id or doc.id == doc_id:
+            return doc.id
+    return doc_id
 
 
 @app.delete("/documents/{company_id}/{doc_id}", response_model=DeleteDocumentResponse)
 async def delete_document_endpoint(company_id: str, doc_id: str) -> DeleteDocumentResponse:
     """Remove a document from a company's workspace.
 
-    doc_id must be the LightRAG internal key (e.g. 'doc-abc123...').
+    doc_id can be the LightRAG internal UUID key (doc-abc123...) or the filename.
     This removes the document's chunks, graph nodes, and vector embeddings.
     Other documents in the same company are unaffected.
     """
     safe_company = _safe_company_id(company_id)
-    deleted = await lightrag_engine.delete_document(doc_id, safe_company)
+    resolved = await _resolve_doc_id(doc_id, safe_company)
+    if not resolved.startswith("doc-"):
+        raise HTTPException(status_code=404, detail=f"Document '{doc_id}' not found in company '{safe_company}'")
+    deleted = await lightrag_engine.delete_document(resolved, safe_company)
     if not deleted:
         raise HTTPException(status_code=404, detail=f"Document '{doc_id}' not found in company '{safe_company}'")
-    # Clean up in-memory status if present
+    # Clean up in-memory status for both UUID and filename keys
+    indexing_status.pop(f"{safe_company}/{resolved}", None)
     indexing_status.pop(f"{safe_company}/{doc_id}", None)
-    return DeleteDocumentResponse(deleted=True, doc_id=doc_id, company_id=safe_company)
+    return DeleteDocumentResponse(deleted=True, doc_id=resolved, company_id=safe_company)
 
 
 @app.post("/query", response_model=QueryResponse)

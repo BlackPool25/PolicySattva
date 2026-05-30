@@ -77,10 +77,11 @@ def _graph_from_networkx_json(company_id: str, doc_filter: str | None) -> dict[s
             if src in node_ids and tgt in node_ids:
                 edges.append({"source": src, "target": tgt, "label": label})
 
+        clean_nodes, clean_edges = _filter_hallucinated_nodes(nodes[:300], edges[:300], company_id)
         return {
-            "nodes": nodes[:300],
-            "edges": edges[:300],
-            "stats": {"node_count": len(nodes), "edge_count": len(edges)},
+            "nodes": clean_nodes,
+            "edges": clean_edges,
+            "stats": {"node_count": len(clean_nodes), "edge_count": len(clean_edges)},
         }
     except Exception as exc:
         logger.warning("Failed to read NetworkX graph for %s: %s", company_id, exc)
@@ -128,6 +129,54 @@ def _chunk_ids_for_doc_filter(doc_filter: str | None, company_id: str) -> list[s
             if chunk_id:
                 chunk_ids.append(chunk_id)
     return chunk_ids
+
+
+def _load_valid_entity_names(company_id: str) -> set[str]:
+    """Load entity names from kv_store that were verified against source text.
+
+    Returns a set of valid entity IDs (lowercased) that exist in the
+    post-validation kv_store. Entities not in this set are LLM hallucinations
+    that should be excluded from graph responses.
+    """
+    storage_dir = get_active_rag_storage_dir() / company_id
+    full_entities_path = storage_dir / "kv_store_full_entities.json"
+    if not full_entities_path.exists():
+        return set()
+    try:
+        with open(full_entities_path, encoding="utf-8") as f:
+            data = json.load(f)
+    except (json.JSONDecodeError, OSError):
+        return set()
+    valid: set[str] = set()
+    for doc_data in data.values():
+        if not isinstance(doc_data, dict):
+            continue
+        names = doc_data.get("entity_names", [])
+        if not isinstance(names, list):
+            continue
+        for name in names:
+            raw = str(name).strip()
+            if raw:
+                valid.add(raw.lower())
+    return valid
+
+def _filter_hallucinated_nodes(nodes: list[dict], edges: list[dict], company_id: str) -> tuple[list[dict], list[dict]]:
+    """Remove nodes whose entity_id doesn't appear in the validated kv_store.
+
+    LightRAG's LLM-based entity extraction can hallucinate entities not
+    present in the source document. This function filters those out by
+    cross-referencing against the post-extraction validated entity list.
+    """
+    valid_names = _load_valid_entity_names(company_id)
+    if not valid_names:
+        return nodes, edges
+    filtered_nodes = [n for n in nodes if str(n.get("id", "")).lower() in valid_names]
+    filtered_ids = {n["id"] for n in filtered_nodes}
+    filtered_edges = [
+        e for e in edges
+        if e.get("source") in filtered_ids and e.get("target") in filtered_ids
+    ]
+    return filtered_nodes, filtered_edges
 
 
 def _empty_graph() -> dict[str, Any]:
@@ -227,10 +276,11 @@ async def get_full_graph_for_doc(doc_filter: str | None, company_id: str = "base
             and str(record["target"]) in node_ids
         ]
 
+        clean_nodes, clean_edges = _filter_hallucinated_nodes(nodes, edges, company_id)
         return {
-            "nodes": nodes,
-            "edges": edges,
-            "stats": {"node_count": len(nodes), "edge_count": len(edges)},
+            "nodes": clean_nodes,
+            "edges": clean_edges,
+            "stats": {"node_count": len(clean_nodes), "edge_count": len(clean_edges)},
         }
     except Exception as exc:
         logger.exception("Failed to fetch full graph: %s", exc)
@@ -304,10 +354,11 @@ async def get_subgraph_for_doc(node_ids: list[str], doc_filter: str | None, comp
             for source, tgt, label in sorted(edges_set)
         ]
 
+        clean_nodes, clean_edges = _filter_hallucinated_nodes(nodes, edges, company_id)
         return {
-            "nodes": nodes,
-            "edges": edges,
-            "stats": {"node_count": len(nodes), "edge_count": len(edges)},
+            "nodes": clean_nodes,
+            "edges": clean_edges,
+            "stats": {"node_count": len(clean_nodes), "edge_count": len(clean_edges)},
         }
     except Exception as exc:
         logger.exception("Failed to fetch subgraph: %s", exc)

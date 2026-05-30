@@ -15,19 +15,20 @@ import ReactMarkdown from 'react-markdown';
 import '@xyflow/react/dist/style.css';
 import { fetchGraph, fetchNodeDetails, fetchSubgraph, type NodeDetail, useAppStore } from '../lib/utils';
 
-function buildRadialNodes(rawNodes: Array<{ id: string; label: string; type?: string }>, highlighted: Set<string>): Node[] {
-  const radius = 280;
-  const centerX = 460;
-  const centerY = 320;
+function buildRadialNodes(
+  rawNodes: Array<{ id: string; label: string; type?: string }>,
+  highlighted: Set<string>,
+): Node[] {
+  const n = rawNodes.length;
+  const radius = 250;
+  const cx = 400;
+  const cy = 300;
   return rawNodes.map((node, index) => {
-    const angle = (index / Math.max(rawNodes.length, 1)) * Math.PI * 2;
+    const angle = (index / n) * Math.PI * 2 - Math.PI / 2;
     const isHighlighted = highlighted.has(node.id);
     return {
       id: node.id,
-      position: {
-        x: centerX + Math.cos(angle) * radius,
-        y: centerY + Math.sin(angle) * radius,
-      },
+      position: { x: cx + Math.cos(angle) * radius, y: cy + Math.sin(angle) * radius },
       data: { label: node.label || node.id },
       style: {
         borderRadius: 999,
@@ -36,8 +37,8 @@ function buildRadialNodes(rawNodes: Array<{ id: string; label: string; type?: st
         color: '#2d261e',
         fontSize: '11px',
         fontWeight: 700,
-        boxShadow: isHighlighted 
-          ? '0 0 15px rgba(132, 204, 22, 0.25), inset 0 0 10px rgba(21, 94, 84, 0.1)' 
+        boxShadow: isHighlighted
+          ? '0 0 15px rgba(132, 204, 22, 0.25), inset 0 0 10px rgba(21, 94, 84, 0.1)'
           : '0 4px 10px rgba(0,0,0,0.02)',
         padding: '12px 16px',
         textTransform: 'uppercase',
