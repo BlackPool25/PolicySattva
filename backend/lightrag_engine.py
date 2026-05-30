@@ -1,17 +1,23 @@
 import json
+import logging
 import os
 import re
+import time
 from pathlib import Path
 
+import httpx
 from dotenv import load_dotenv
 from lightrag import LightRAG, QueryParam
 from lightrag.kg.neo4j_impl import Neo4JStorage as _Neo4JStorage
 
 from document_loader import load_pdf
-from llm_provider import get_embedding_func, get_llm_func
+from graph_service import get_subgraph_for_doc
+from llm_provider import get_active_rag_storage_dir, get_embedding_func, get_llm_func
 
 
-load_dotenv()
+load_dotenv(override=True)
+
+logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
@@ -77,12 +83,30 @@ async def _semantic_upsert_edge(
 
 _Neo4JStorage.upsert_edge = _semantic_upsert_edge  # type: ignore[method-assign]
 
-_RAG_STORAGE_DIR = str(Path(__file__).resolve().parent / "rag_storage")
-
 # Appended to every query so the LLM returns structured metadata in a
 # parseable block. Phase 2 reads risk_level, source_clauses, and
 # graph_nodes_involved directly from the dict this function returns.
 _ANALYSIS_PROMPT = """
+You are PolicySattva's legal explainer assistant.
+Write for non-lawyers using concise plain language.
+Before writing, infer the best visual markdown structure for the specific question and use ONE:
+1) checklist (for obligations/limits/requirements),
+2) comparison table (for alternatives/tiers),
+3) timeline steps (for process/questions about sequence),
+4) risk matrix bullets (for legal or financial risk).
+
+Always include these sections in markdown:
+### Direct answer
+### Key points
+### What to do next
+
+Formatting rules:
+- Do NOT output any internal thinking, reasoning process, chain-of-thought, or <think> tags. Output your final response directly.
+- Use short bullets, not long paragraphs.
+- Keep total length under 220 words unless user explicitly asks for detail.
+- Bold critical terms (deadlines, limits, penalties, rights).
+- If uncertain, include a short "Unknowns" bullet.
+- Do not invent clauses. Use only retrieved context.
 
 After your answer, append this exact block — nothing after it:
 
@@ -91,6 +115,7 @@ After your answer, append this exact block — nothing after it:
 [/ANALYSIS]
 
 Rules:
+- Do NOT include any thoughts or reasoning in the JSON block or surrounding text.
 - risk_level: HIGH = serious data/financial/legal risk; MEDIUM = moderate concern; LOW = routine clause.
 - graph_nodes_involved: 2-5 key entity names from the document relevant to this answer.
 - source_clauses: 1-3 direct verbatim quotes from the source document supporting your answer.
@@ -98,38 +123,100 @@ Rules:
 
 
 def _resolve_neo4j_env() -> None:
-    """Point NEO4J_* env vars at the first configured target (cloud → local).
+    """Point NEO4J_* env vars at the first configured target that is reachable.
 
     LightRAG's Neo4JStorage reads NEO4J_URI / NEO4J_USERNAME / NEO4J_PASSWORD /
-    NEO4J_DATABASE directly from the environment. This function keeps that in
-    sync with the same cloud-first fallback logic in neo4j_connection.py so
-    both the healthcheck and LightRAG always reach the same database.
+    NEO4J_DATABASE directly from the environment. Target order is controlled
+    by neo4j_connection._candidate_targets() and can be overridden with
+    NEO4J_TARGET=local|cloud.
     """
     from neo4j_connection import _candidate_targets
+    import socket
 
     for target in _candidate_targets():
         if not target.password:
             continue
-        os.environ["NEO4J_URI"] = target.uri
-        os.environ["NEO4J_USERNAME"] = target.username
-        os.environ["NEO4J_PASSWORD"] = target.password
-        os.environ["NEO4J_DATABASE"] = target.database
-        return
+        try:
+            host = target.uri.split("://")[-1].split(":")[0]
+            port = int(target.uri.split(":")[-1]) if ":" in target.uri.split("://")[-1] else 7687
+            with socket.create_connection((host, port), timeout=2):
+                os.environ["NEO4J_URI"] = target.uri
+                os.environ["NEO4J_USERNAME"] = target.username
+                os.environ["NEO4J_PASSWORD"] = target.password
+                os.environ["NEO4J_DATABASE"] = target.database
+                print(f"Routing LightRAG Neo4j to active target: {target.name} ({target.uri})", flush=True)
+                return
+        except Exception:
+            continue
     raise RuntimeError(
-        "No Neo4j target is configured. Set NEO4J_URI/PASSWORD or NEO4J_CLOUD_URI/PASSWORD in .env"
+        "No Neo4j target is reachable. Ensure Neo4j is running and accessible."
     )
 
 
-def _build_rag() -> LightRAG:
-    _resolve_neo4j_env()
+def _neo4j_available() -> bool:
+    """Quick check: can we reach any configured Neo4j target?"""
+    from neo4j_connection import _candidate_targets
+    import socket
+    for target in _candidate_targets():
+        if not target.password:
+            continue
+        try:
+            host = target.uri.split("://")[-1].split(":")[0]
+            port = int(target.uri.split(":")[-1]) if ":" in target.uri.split("://")[-1] else 7687
+            with socket.create_connection((host, port), timeout=2):
+                return True
+        except Exception:
+            continue
+    return False
+
+
+def _mongo_configured() -> bool:
+    """Quick check: is MONGO_URI set in environment?"""
+    return bool(os.getenv("MONGO_URI", "").strip())
+
+
+def _build_rag(company_id: str) -> LightRAG:
+    """Build a LightRAG instance scoped to a specific company workspace.
+
+    LightRAG creates <working_dir>/<workspace>/ for all storage files.
+    We set working_dir to the base embedding dir and workspace=company_id,
+    so files land at rag_storage/<embed_ns>/<company_id>/*.json and Neo4j
+    nodes carry the company_id label — fully isolated per company.
+
+    Falls back to NetworkXStorage (file-based) when Neo4j is unreachable.
+    """
     llm_func, llm_model_name = get_llm_func()
     embedding_func = get_embedding_func()
+    base_dir = str(get_active_rag_storage_dir())
+
+    if _neo4j_available():
+        _resolve_neo4j_env()
+        graph_storage = "Neo4JStorage"
+    else:
+        graph_storage = "NetworkXStorage"
+        print(f"[{company_id}] Neo4j unavailable — using NetworkXStorage (file-based graph)")
+
+    kv_storage = "JsonKVStorage"
+    vector_storage = "NanoVectorDBStorage"
+    doc_status_storage = "JsonDocStatusStorage"
+
+    if _mongo_configured():
+        kv_storage = "MongoKVStorage"
+        vector_storage = "MongoVectorDBStorage"
+        doc_status_storage = "MongoDocStatusStorage"
+        print(f"[{company_id}] MongoDB configured — using MongoKVStorage+VectorDBStorage+DocStatusStorage")
+
     return LightRAG(
-        working_dir=_RAG_STORAGE_DIR,
+        working_dir=base_dir,
+        workspace=company_id,
         llm_model_func=llm_func,
         llm_model_name=llm_model_name,
         embedding_func=embedding_func,
-        graph_storage="Neo4JStorage",
+        graph_storage=graph_storage,
+        kv_storage=kv_storage,
+        vector_storage=vector_storage,
+        doc_status_storage=doc_status_storage,
+        entity_extract_max_gleaning=0,
     )
 
 
@@ -153,20 +240,122 @@ def _parse_analysis_block(raw: str) -> dict[str, object]:
         return {"risk_level": "UNKNOWN", "graph_nodes_involved": [], "source_clauses": []}
 
 
-async def index_document(pdf_path: str) -> None:
-    text, metadata = load_pdf(pdf_path)
-    print(f"Indexing file={metadata['filename']} pages={metadata['page_count']} chars={len(text)}")
+def _normalize_graph_nodes(nodes: object) -> list[str]:
+    if not isinstance(nodes, list):
+        return []
+    normalized: list[str] = []
+    seen: set[str] = set()
+    for node in nodes:
+        text = str(node).strip()
+        if not text:
+            continue
+        lowered = text.lower()
+        if lowered in seen:
+            continue
+        seen.add(lowered)
+        normalized.append(text)
+    return normalized[:8]
 
-    rag = _build_rag()
+
+async def _filter_graph_nodes_against_db(nodes: list[str], doc_filter: str | None, company_id: str) -> list[str]:
+    if not nodes:
+        return []
+    try:
+        subgraph = await get_subgraph_for_doc(nodes, doc_filter=doc_filter, company_id=company_id)
+        existing = {str(node.get("id", "")).strip() for node in subgraph.get("nodes", []) if isinstance(node, dict)}
+        filtered = [node for node in nodes if node in existing]
+        return filtered if filtered else nodes
+    except Exception:
+        return nodes
+
+
+async def _prewarm_ollama() -> None:
+    """Send a minimal request to Ollama to load the model into VRAM before indexing.
+
+    Avoids cold-start latency on the first real chunk. Only runs when
+    PRIMARY_LLM_PROVIDER=ollama; silently skips on failure so indexing
+    still proceeds.
+    """
+    from llm_provider import _getenv, _resolve_ollama_url
+    if _getenv("PRIMARY_LLM_PROVIDER", "gemini").lower() != "ollama":
+        return
+    ollama_base_url = _resolve_ollama_url(_getenv("OLLAMA_BASE_URL", "http://localhost:11434"))
+    model = _getenv("OLLAMA_LLM_MODEL", "qwen3:8b")
+    try:
+        async with httpx.AsyncClient(timeout=60.0) as client:
+            await client.post(
+                f"{ollama_base_url}/api/generate",
+                json={"model": model, "prompt": "hi", "stream": False, "options": {"num_predict": 1}},
+            )
+        logger.info("Ollama pre-warm complete model=%s", model)
+    except Exception as exc:
+        logger.warning("Ollama pre-warm failed (non-fatal): %s", exc)
+
+
+async def index_document(pdf_path: str, company_id: str) -> None:
+    """Index a PDF into the company-scoped LightRAG workspace.
+
+    Safe to call multiple times — LightRAG deduplicates by content hash.
+    A second upload of the same file is a no-op (status: duplicate/failed),
+    existing documents in the workspace are never removed.
+    """
+    overall_start = time.perf_counter()
+    load_start = time.perf_counter()
+    text, metadata = load_pdf(pdf_path)
+    load_elapsed = time.perf_counter() - load_start
+    logger.info(
+        "Indexing start company=%s file=%s pages=%s chars=%d load_elapsed=%.3fs",
+        company_id,
+        metadata["filename"],
+        metadata["page_count"],
+        len(text),
+        load_elapsed,
+    )
+
+    rag = _build_rag(company_id)
+    await _prewarm_ollama()
+    init_start = time.perf_counter()
+    await rag.initialize_storages()
+    init_elapsed = time.perf_counter() - init_start
+    logger.info("Indexing storages initialized company=%s elapsed=%.3fs", company_id, init_elapsed)
+    try:
+        insert_start = time.perf_counter()
+        await rag.ainsert(input=[text], file_paths=[pdf_path])
+        insert_elapsed = time.perf_counter() - insert_start
+        logger.info("Indexing insert completed company=%s elapsed=%.3fs", company_id, insert_elapsed)
+    finally:
+        finalize_start = time.perf_counter()
+        await rag.finalize_storages()
+        finalize_elapsed = time.perf_counter() - finalize_start
+        overall_elapsed = time.perf_counter() - overall_start
+        logger.info(
+            "Indexing finalized company=%s finalize_elapsed=%.3fs total_elapsed=%.3fs",
+            company_id,
+            finalize_elapsed,
+            overall_elapsed,
+        )
+
+
+async def delete_document(doc_id: str, company_id: str) -> bool:
+    """Remove a document from the company-scoped LightRAG workspace.
+
+    doc_id is the LightRAG internal doc key (e.g. 'doc-abc123...').
+    Returns True if deleted, False if not found.
+    """
+    rag = _build_rag(company_id)
     await rag.initialize_storages()
     try:
-        await rag.ainsert(input=[text], file_paths=[pdf_path])
+        result = await rag.adelete_by_doc_id(doc_id)
+        return result.status == "success"
+    except Exception as exc:
+        print(f"delete_document failed company={company_id} doc_id={doc_id}: {exc}")
+        return False
     finally:
         await rag.finalize_storages()
 
 
-async def query(question: str, doc_filter: str | None = None) -> dict[str, object]:
-    """Query the indexed documents and return a Phase 2-ready structured response.
+async def query(question: str, company_id: str, doc_filter: str | None = None) -> dict[str, object]:
+    """Query the indexed documents for a specific company workspace.
 
     Returns:
         {
@@ -176,7 +365,7 @@ async def query(question: str, doc_filter: str | None = None) -> dict[str, objec
             "graph_nodes_involved": [str],
         }
     """
-    rag = _build_rag()
+    rag = _build_rag(company_id)
     await rag.initialize_storages()
     try:
         # QueryParam.ids was removed in lightrag-hku v1.4.11. When doc_filter
@@ -194,17 +383,22 @@ async def query(question: str, doc_filter: str | None = None) -> dict[str, objec
             param=QueryParam(
                 mode="mix",
                 only_need_context=False,
+                top_k=24,
+                chunk_top_k=12,
+                enable_rerank=False,
                 user_prompt=effective_prompt,
             ),
         )
         raw_str = raw_response if isinstance(raw_response, str) else str(raw_response)
         answer = re.split(r"\[ANALYSIS\]", raw_str, maxsplit=1)[0].strip()
         structured = _parse_analysis_block(raw_str)
+        normalized_nodes = _normalize_graph_nodes(structured.get("graph_nodes_involved", []))
+        validated_nodes = await _filter_graph_nodes_against_db(normalized_nodes, doc_filter=doc_filter, company_id=company_id)
         return {
             "answer": answer,
             "risk_level": structured["risk_level"],
             "source_clauses": structured["source_clauses"],
-            "graph_nodes_involved": structured["graph_nodes_involved"],
+            "graph_nodes_involved": validated_nodes,
         }
     finally:
         await rag.finalize_storages()

@@ -1,5 +1,9 @@
+import logging
 import os
+import re
+import time
 from collections.abc import Awaitable, Callable
+from pathlib import Path
 
 import httpx
 import numpy as np
@@ -10,19 +14,21 @@ from lightrag.llm.openai import openai_complete_if_cache
 from lightrag.utils import wrap_embedding_func_with_attrs
 
 
-load_dotenv()
+load_dotenv(override=True)
+
+logger = logging.getLogger(__name__)
 
 # --- Model constants ---
-GEMINI_MODEL_NAME = "gemini-flash-latest"
+GEMINI_MODEL_NAME = "gemini-2.5-flash-lite"
 GEMINI_EMBED_MODEL = "gemini-embedding-2-preview"
 GEMINI_EMBED_DIM = 3072  # gemini-embedding-2-preview output dimension
 
 GROQ_MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct"
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
-OLLAMA_EMBED_MODEL = "qwen3-embedding:0.6b"  # 1024-dim max (0.6B variant)
-OLLAMA_EMBED_DIM = 1024                       # 8B variant supports 4096
-DEFAULT_OLLAMA_LLM_MODEL = "qwen2.5:32b"
+OLLAMA_EMBED_MODEL = "qwen3-embedding:8b"
+OLLAMA_EMBED_DIM = 4096
+DEFAULT_OLLAMA_LLM_MODEL = "qwen3.5:9b"
 
 
 # ---------------------------------------------------------------------------
@@ -79,34 +85,57 @@ async def verify_gemini_api_key(timeout_seconds: float = 15.0) -> tuple[bool, st
 #   EMBED_PROVIDER=ollama  → nomic-embed-text,            768-dim
 # ---------------------------------------------------------------------------
 
-def get_embedding_func() -> Callable[[list[str]], Awaitable[np.ndarray]]:
-    """Return a LightRAG-compatible embedding function.
+def _resolve_ollama_url(url: str) -> str:
+    """If running inside a Docker container and url points to localhost, rewrite it to host.docker.internal."""
+    if os.path.exists("/.dockerenv") and "localhost" in url:
+        return url.replace("localhost", "host.docker.internal")
+    return url
 
-    The provider (and therefore vector dimension) is chosen once at startup
-    via the EMBED_PROVIDER env var. Mixing providers across runs corrupts the
-    index — delete rag_storage/ before switching.
-    """
-    embed_provider = os.getenv("EMBED_PROVIDER", "gemini").strip().lower()
-    gemini_api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").strip()
+
+def get_embedding_func() -> Callable[[list[str]], Awaitable[np.ndarray]]:
+    """Return a LightRAG-compatible embedding function."""
+    embed_provider = _getenv("EMBED_PROVIDER", "gemini").lower()
+    gemini_api_key = _getenv("GEMINI_API_KEY")
+    ollama_base_url = _resolve_ollama_url(_getenv("OLLAMA_BASE_URL", "http://localhost:11434"))
+    ollama_embed_model = _getenv("OLLAMA_EMBED_MODEL", OLLAMA_EMBED_MODEL)
+    ollama_embed_dim = int(_getenv("OLLAMA_EMBED_DIM", str(OLLAMA_EMBED_DIM)) or str(OLLAMA_EMBED_DIM))
+
+    logger.info(
+        "Embedding provider=%s model=%s dim=%s",
+        embed_provider,
+        ollama_embed_model if embed_provider == "ollama" else GEMINI_EMBED_MODEL,
+        ollama_embed_dim if embed_provider == "ollama" else GEMINI_EMBED_DIM,
+    )
 
     if embed_provider == "ollama":
-        # qwen3-embedding:0.6b supports 32–1024 dims (pull with: ollama pull qwen3-embedding:0.6b)
-        # Switch to qwen3-embedding:8b for 4096-dim quality at the cost of RAM.
+        # Default local embed model is qwen3-embedding:0.6b (1024 dim).
+        # You can override model/dim at runtime via OLLAMA_EMBED_MODEL/OLLAMA_EMBED_DIM.
         @wrap_embedding_func_with_attrs(
-            embedding_dim=OLLAMA_EMBED_DIM,
+            embedding_dim=ollama_embed_dim,
             max_token_size=8192,
-            model_name=OLLAMA_EMBED_MODEL,
+            model_name=ollama_embed_model,
         )
         async def embedding_func_ollama(texts: list[str]) -> np.ndarray:
+            start = time.perf_counter()
             try:
-                return await ollama_embed.func(
+                result = await ollama_embed.func(
                     texts,
-                    embed_model=OLLAMA_EMBED_MODEL,
+                    embed_model=ollama_embed_model,
                     host=ollama_base_url,
                 )
             except Exception as exc:
-                raise RuntimeError(f"Ollama embedding failed: {exc}") from exc
+                raise RuntimeError(
+                    f"Ollama embedding failed for model '{ollama_embed_model}' (dim={ollama_embed_dim}): {exc}"
+                ) from exc
+            finally:
+                elapsed = time.perf_counter() - start
+                logger.info(
+                    "Embedding batch provider=ollama model=%s count=%d elapsed=%.3fs",
+                    ollama_embed_model,
+                    len(texts),
+                    elapsed,
+                )
+            return result
 
         return embedding_func_ollama
 
@@ -117,8 +146,9 @@ def get_embedding_func() -> Callable[[list[str]], Awaitable[np.ndarray]]:
         model_name=GEMINI_EMBED_MODEL,
     )
     async def embedding_func_gemini(texts: list[str]) -> np.ndarray:
+        start = time.perf_counter()
         try:
-            return await gemini_embed.func(
+            result = await gemini_embed.func(
                 texts,
                 api_key=gemini_api_key,
                 model=GEMINI_EMBED_MODEL,
@@ -129,13 +159,119 @@ def get_embedding_func() -> Callable[[list[str]], Awaitable[np.ndarray]]:
                 f"To use local Ollama instead, set EMBED_PROVIDER=ollama in .env "
                 f"and delete backend/rag_storage/ before re-indexing."
             ) from exc
+        finally:
+            elapsed = time.perf_counter() - start
+            logger.info(
+                "Embedding batch provider=gemini model=%s count=%d elapsed=%.3fs",
+                GEMINI_EMBED_MODEL,
+                len(texts),
+                elapsed,
+            )
+        return result
 
     return embedding_func_gemini
+
+
+def _strip_inline_comment(value: str) -> str:
+    """Strip shell-style inline comments from env var values.
+
+    python-dotenv does NOT strip inline comments (e.g. 'ollama  # or gemini').
+    This helper removes everything from the first ' #' onwards.
+    """
+    idx = value.find(" #")
+    return value[:idx].strip() if idx != -1 else value.strip()
+
+
+def _getenv(key: str, default: str = "") -> str:
+    """os.getenv with inline-comment stripping."""
+    return _strip_inline_comment(os.getenv(key, default))
+
+
+def get_active_index_namespace() -> str:
+    """Return a stable namespace key for the active embedding setup."""
+    embed_provider = _getenv("EMBED_PROVIDER", "gemini").lower()
+    if embed_provider == "ollama":
+        model = _getenv("OLLAMA_EMBED_MODEL", OLLAMA_EMBED_MODEL).lower()
+        dim = int(_getenv("OLLAMA_EMBED_DIM", str(OLLAMA_EMBED_DIM)) or str(OLLAMA_EMBED_DIM))
+    else:
+        model = GEMINI_EMBED_MODEL.lower()
+        dim = GEMINI_EMBED_DIM
+    safe_model = re.sub(r"[^a-z0-9]+", "_", model).strip("_")
+    return f"{embed_provider}_{safe_model}_{dim}"
+
+
+def get_active_rag_storage_dir() -> Path:
+    """Return the base per-embedding storage directory.
+
+    Company-specific data lives in subdirectories under this path:
+        <base>/<company_id>/
+    This function returns the base; callers that need a company-scoped path
+    should append the company_id themselves.
+    """
+    base_dir = Path(__file__).resolve().parent / "rag_storage"
+    return base_dir / get_active_index_namespace()
 
 
 # ---------------------------------------------------------------------------
 # LLM — Gemini → Groq (Llama 4 Scout) → Ollama fallback chain
 # ---------------------------------------------------------------------------
+
+def _gemini_cost_profile(keyword_extraction: bool) -> dict[str, object]:
+    """Tune Gemini generation cost based on LightRAG stage."""
+    if keyword_extraction:
+        # Indexing/entity extraction path: keep outputs minimal and deterministic.
+        return {"temperature": 0.0, "top_p": 0.1, "max_output_tokens": 384}
+    # Query path: low-reasoning budget with enough room for concise structured answers.
+    return {"temperature": 0.1, "top_p": 0.3, "max_output_tokens": 768}
+
+
+def _openai_like_cost_profile(keyword_extraction: bool) -> dict[str, object]:
+    """Cost profile for Groq/OpenAI-compatible calls."""
+    if keyword_extraction:
+        return {"temperature": 0.0, "top_p": 0.1, "max_tokens": 384}
+    return {"temperature": 0.1, "top_p": 0.3, "max_tokens": 768}
+
+
+def _ollama_cost_profile(keyword_extraction: bool, kwargs: dict[str, object]) -> dict[str, object]:
+    """Merge conservative Ollama generation options into kwargs.
+
+    num_ctx: must be set explicitly — Ollama defaults to ~2048 which truncates
+    LightRAG's entity extraction prompts (system prompt alone is ~1305 tokens).
+    think: must be top-level only (not inside options) per Ollama API spec.
+
+    NOTE: LightRAG entity extraction calls llm_model_func with keyword_extraction=False.
+    Only query-time keyword extraction uses keyword_extraction=True.
+    Entity extraction responses can be 3000+ chars (~800+ tokens), so num_predict
+    must be large enough for the non-keyword_extraction path too.
+    """
+    next_kwargs = dict(kwargs)
+    base_options = next_kwargs.get("options")
+    options: dict[str, object] = dict(base_options) if isinstance(base_options, dict) else {}
+    num_ctx = int(_getenv("OLLAMA_NUM_CTX", "32768") or "32768")
+    if keyword_extraction:
+        # Query-time keyword extraction: JSON output, keep it tight
+        options.update({"temperature": 0.0, "top_p": 0.1, "num_predict": 512, "num_ctx": num_ctx})
+    else:
+        # Entity extraction during indexing AND query responses both use this path.
+        # Entity extraction responses can be 800+ tokens; query answers need ~768.
+        # Use 2048 to safely cover both without truncation.
+        options.update({"temperature": 0.1, "top_p": 0.3, "num_predict": 2048, "num_ctx": num_ctx})
+    next_kwargs["options"] = options
+    next_kwargs["think"] = False  # top-level only — Ollama API spec
+    return next_kwargs
+
+
+def _clean_extraction_response(output: str) -> str:
+    """Clean the extraction output to remove markdown code blocks and intro text.
+
+    LightRAG expects raw text lines formatted with <|>. LLMs often wrap these
+    in ``` or ```txt code blocks, which triggers parser warnings.
+    """
+    # Remove triple backtick code blocks (e.g. ```txt ... ```)
+    cleaned = re.sub(r"```[a-zA-Z0-9_-]*\n", "", output)
+    cleaned = cleaned.replace("```", "")
+    return cleaned.strip()
+
 
 def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
     """Return (llm_async_callable, primary_model_name) based on PRIMARY_LLM_PROVIDER.
@@ -145,22 +281,31 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
       groq   → gemini → ollama
       ollama → gemini → groq
     """
-    primary_provider = os.getenv("PRIMARY_LLM_PROVIDER", "gemini").strip().lower()
-    groq_api_key = os.getenv("GROQ_API_KEY", "").strip()
-    gemini_api_key = os.getenv("GEMINI_API_KEY", "").strip()
-    ollama_base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").strip()
-    ollama_llm_model = os.getenv("OLLAMA_LLM_MODEL", DEFAULT_OLLAMA_LLM_MODEL).strip()
+    primary_provider = _getenv("PRIMARY_LLM_PROVIDER", "gemini").lower()
+    groq_api_key = _getenv("GROQ_API_KEY")
+    gemini_api_key = _getenv("GEMINI_API_KEY")
+    ollama_base_url = _resolve_ollama_url(_getenv("OLLAMA_BASE_URL", "http://localhost:11434"))
+    ollama_llm_model = _getenv("OLLAMA_LLM_MODEL", DEFAULT_OLLAMA_LLM_MODEL)
 
     provider_priority_map: dict[str, list[str]] = {
-        "gemini": ["gemini", "groq", "ollama"],
-        "groq":   ["groq", "gemini", "ollama"],
-        "ollama": ["ollama", "gemini", "groq"],
+        "gemini": ["gemini", "ollama"],
+        "groq":   ["gemini", "ollama"],
+        "ollama": ["ollama", "gemini"],
     }
 
     if primary_provider not in provider_priority_map:
         raise ValueError(
             f"PRIMARY_LLM_PROVIDER must be one of 'gemini', 'groq', or 'ollama'. Got: {primary_provider!r}"
         )
+
+    def _process_system_prompt(sys_prompt: str | None) -> str | None:
+        thinking_mode = os.getenv("INFERENCE_THINKING_MODE", "false").strip().lower()
+        if thinking_mode == "false":
+            no_think_instruction = "IMPORTANT: Do NOT output any internal thinking, reasoning process, chain-of-thought, or `<think>` tags. Output the final answer directly."
+            if sys_prompt:
+                return sys_prompt + "\n" + no_think_instruction
+            return no_think_instruction
+        return sys_prompt
 
     async def call_gemini(
         prompt: str,
@@ -170,15 +315,28 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         **kwargs: object,
     ) -> str:
         try:
-            return await gemini_model_complete(
+            system_prompt = _process_system_prompt(system_prompt)
+            request_kwargs = {**_gemini_cost_profile(keyword_extraction), **kwargs}
+            start = time.perf_counter()
+            res = await gemini_model_complete(
                 prompt,
                 system_prompt=system_prompt,
                 history_messages=history_messages,
                 keyword_extraction=keyword_extraction,
                 api_key=gemini_api_key,
                 model_name=GEMINI_MODEL_NAME,
-                **kwargs,
+                **request_kwargs,
             )
+            elapsed = time.perf_counter() - start
+            logger.info(
+                "LLM provider=gemini model=%s keyword_extraction=%s prompt_chars=%d response_chars=%d elapsed=%.3fs",
+                GEMINI_MODEL_NAME,
+                keyword_extraction,
+                len(prompt),
+                len(res or ""),
+                elapsed,
+            )
+            return _clean_extraction_response(res) if keyword_extraction else res
         except Exception as exc:
             raise RuntimeError(f"Gemini completion failed: {exc}") from exc
 
@@ -190,7 +348,10 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         **kwargs: object,
     ) -> str:
         try:
-            return await openai_complete_if_cache(
+            system_prompt = _process_system_prompt(system_prompt)
+            request_kwargs = {**_openai_like_cost_profile(keyword_extraction), **kwargs}
+            start = time.perf_counter()
+            res = await openai_complete_if_cache(
                 GROQ_MODEL_NAME,
                 prompt,
                 system_prompt=system_prompt,
@@ -198,8 +359,18 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
                 keyword_extraction=keyword_extraction,
                 api_key=groq_api_key,
                 base_url=GROQ_BASE_URL,
-                **kwargs,
+                **request_kwargs,
             )
+            elapsed = time.perf_counter() - start
+            logger.info(
+                "LLM provider=groq model=%s keyword_extraction=%s prompt_chars=%d response_chars=%d elapsed=%.3fs",
+                GROQ_MODEL_NAME,
+                keyword_extraction,
+                len(prompt),
+                len(res or ""),
+                elapsed,
+            )
+            return _clean_extraction_response(res) if keyword_extraction else res
         except Exception as exc:
             raise RuntimeError(f"Groq completion failed: {exc}") from exc
 
@@ -214,14 +385,40 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         # kwargs["hashing_kv"].global_config["llm_model_name"] — do NOT pass
         # model_name here or the ollama client will reject it.
         try:
-            return await ollama_model_complete(
+            system_prompt = _process_system_prompt(system_prompt)
+            request_kwargs = _ollama_cost_profile(keyword_extraction, kwargs)
+            request_kwargs["think"] = False
+            options = request_kwargs.get("options", {})
+            logger.info(
+                "LLM request provider=ollama model=%s keyword_extraction=%s prompt_chars=%d system_prompt_chars=%d options=%s think=%s",
+                ollama_llm_model,
+                keyword_extraction,
+                len(prompt),
+                len(system_prompt or ""),
+                options,
+                request_kwargs.get("think"),
+            )
+            start = time.perf_counter()
+            res = await ollama_model_complete(
                 prompt,
                 system_prompt=system_prompt,
                 history_messages=history_messages,
                 keyword_extraction=keyword_extraction,
                 host=ollama_base_url,
-                **kwargs,
+                **request_kwargs,
             )
+            elapsed = time.perf_counter() - start
+            response_text = res or ""
+            has_think = "<think>" in response_text or "</think>" in response_text
+            logger.info(
+                "LLM response provider=ollama model=%s keyword_extraction=%s response_chars=%d has_think=%s elapsed=%.3fs",
+                ollama_llm_model,
+                keyword_extraction,
+                len(response_text),
+                has_think,
+                elapsed,
+            )
+            return _clean_extraction_response(res) if keyword_extraction else res
         except Exception as exc:
             raise RuntimeError(f"Ollama completion failed: {exc}") from exc
 

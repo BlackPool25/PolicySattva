@@ -2,18 +2,18 @@
 
 @layer base {
   :root {
-    --background: #f8f9fa;
-    --foreground: #191c1d;
-    --primary: #004541;
+    --background: #f4f0e6; /* Parchment cream background */
+    --foreground: #2d261e; /* Vintage charcoal ink */
+    --primary: #155e54; /* Forest dark teal */
     --primary-foreground: #ffffff;
-    --border: #bec9c7;
-    --surface: #ffffff;
-    --surface-muted: #f3f4f5;
-    --outline: #6f7977;
-    --success: #106130;
-    --warning: #b45309;
-    --danger: #ba1a1a;
-    --ring: rgba(33, 105, 99, 0.25);
+    --border: #d4c5a9; /* Antique gold border */
+    --surface: #fbf9f4; /* Light clean papyrus */
+    --surface-muted: #eae3d2; /* Shadowed parchment */
+    --outline: #8c7e6b; /* Sepia outline */
+    --success: #16a34a; /* Vibrant emerald green */
+    --warning: #ca8a04;
+    --danger: #dc2626;
+    --ring: rgba(21, 94, 84, 0.25);
   }
 }
 
@@ -34,7 +34,7 @@
 }
 
 body {
-  background: radial-gradient(circle at top left, #f1f5f9 0%, #ffffff 100%);
+  background: radial-gradient(circle at top left, #eae3d2 0%, #f4f0e6 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -47,8 +47,8 @@ body {
 }
 
 ::selection {
-  background: rgba(143, 211, 204, 0.45);
-  color: #00201e;
+  background: rgba(132, 204, 22, 0.3); /* Neon lime-green highlight */
+  color: #1a2e05;
 }
 
 /* Custom Scrollbar */
@@ -60,15 +60,47 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #bec9c7;
+  background: #d4c5a9;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #6f7977;
+  background: #8c7e6b;
+}
+
+/* Parchment Card */
+.parchment-card {
+  background: #fbf9f4;
+  border: 1px solid #d4c5a9;
+  box-shadow: 0 10px 30px rgba(45, 38, 30, 0.05), inset 0 0 40px rgba(212, 197, 169, 0.2);
+  border-radius: 1.5rem;
+}
+
+/* Mural Corner Borders */
+.mural-border {
+  position: relative;
+}
+.mural-border::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  border: 1px solid rgba(140, 126, 107, 0.15);
+  pointer-events: none;
+  border-radius: 1.25rem;
+}
+
+/* Glowing Neon Highlights */
+.glow-highlight {
+  box-shadow: 0 0 15px rgba(132, 204, 22, 0.2);
+  border-color: #84cc16 !important;
 }
 
 .glass-panel {
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(251, 249, 244, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  border: 1px solid #d4c5a9;
 }
+

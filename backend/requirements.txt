@@ -4,6 +4,7 @@ python-dotenv
 httpx
 neo4j
 numpy
+pymongo
 fastapi
 uvicorn
 python-multipart

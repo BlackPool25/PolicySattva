@@ -29,30 +29,47 @@ def _candidate_targets() -> list[Neo4jTarget]:
     local_password = os.getenv("NEO4J_PASSWORD", "").strip()
     local_database = os.getenv("NEO4J_DATABASE", "neo4j").strip() or "neo4j"
 
-    targets: list[Neo4jTarget] = []
-    if cloud_uri and cloud_user and cloud_password:
-        targets.append(
-            Neo4jTarget(
-                name="cloud",
-                uri=cloud_uri,
-                username=cloud_user,
-                password=cloud_password,
-                database=cloud_database,
-            )
-        )
+    local_target: Neo4jTarget | None = None
+    docker_local_target: Neo4jTarget | None = None
+    cloud_target: Neo4jTarget | None = None
 
     if local_uri and local_user:
-        targets.append(
-            Neo4jTarget(
-                name="local",
-                uri=local_uri,
+        local_target = Neo4jTarget(
+            name="local",
+            uri=local_uri,
+            username=local_user,
+            password=local_password,
+            database=local_database,
+        )
+        if "localhost" in local_uri:
+            docker_local_target = Neo4jTarget(
+                name="docker_local",
+                uri=local_uri.replace("localhost", "neo4j"),
                 username=local_user,
                 password=local_password,
                 database=local_database,
             )
+
+    if cloud_uri and cloud_user and cloud_password:
+        cloud_target = Neo4jTarget(
+            name="cloud",
+            uri=cloud_uri,
+            username=cloud_user,
+            password=cloud_password,
+            database=cloud_database,
         )
 
-    return targets
+    # Optional explicit override:
+    #   NEO4J_TARGET=local -> prefer local first
+    #   NEO4J_TARGET=cloud -> prefer cloud first
+    # default: cloud-first with local fallback.
+    preferred = os.getenv("NEO4J_TARGET", "cloud").strip().lower()
+    if preferred == "cloud":
+        ordered = [cloud_target, local_target, docker_local_target]
+    else:
+        ordered = [local_target, docker_local_target, cloud_target]
+
+    return [target for target in ordered if target is not None]
 
 
 def get_neo4j_driver_with_fallback() -> tuple[object, Neo4jTarget]:

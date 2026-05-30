@@ -1,26 +1,39 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FileText, PanelLeftClose, PanelLeftOpen, Send, Waypoints } from 'lucide-react';
-import { type ChatItem, queryDocument, useAppStore } from '../lib/utils';
+import { Cloud, FileText, PanelLeftClose, PanelLeftOpen, RotateCcw, Send, Server, Waypoints, ArrowRight } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import {
+  getProviderSettings,
+  setProviderSettings,
+  submitQueryInBackground,
+  type ChatItem,
+  useAppStore,
+} from '../lib/utils';
 
 export default function Chat() {
   const navigate = useNavigate();
   const endRef = useRef<HTMLDivElement>(null);
   const [input, setInput] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [docsCollapsed, setDocsCollapsed] = useState(false);
+  const [docsCollapsed, setDocsCollapsed] = useState(true);
+  const [isLocalOllama, setIsLocalOllama] = useState(false);
+  const [providerStatusText, setProviderStatusText] = useState('');
+  const [isUpdatingProvider, setIsUpdatingProvider] = useState(false);
 
   const documents = useAppStore((state) => state.documents);
   const activeDocId = useAppStore((state) => state.activeDocId);
   const chatHistory = useAppStore((state) => state.chatHistory);
+  const pendingQueryCount = useAppStore((state) => state.pendingQueryCount);
   const setActiveDoc = useAppStore((state) => state.setActiveDoc);
-  const addUserMessage = useAppStore((state) => state.addUserMessage);
-  const addAssistantMessage = useAppStore((state) => state.addAssistantMessage);
   const setHighlightedNodes = useAppStore((state) => state.setHighlightedNodes);
+  const startNewChatSession = useAppStore((state) => state.startNewChatSession);
 
   const activeDoc = useMemo(
     () => documents.find((doc) => doc.id === activeDocId) ?? null,
     [documents, activeDocId]
+  );
+  const readyDocuments = useMemo(
+    () => documents.filter((doc) => doc.status === 'ready'),
+    [documents]
   );
 
   const hasCompletedChat = useMemo(
@@ -38,17 +51,21 @@ export default function Chat() {
     const filtered = docBaseName
       ? all.filter((s) => s.file.toLowerCase().includes(docBaseName))
       : all;
-
-    if (filtered.length === 0) return null;
+    const visibleSources = filtered.length > 0 ? filtered : all;
 
     return (
-      <details className="mt-3 rounded-lg border border-border/50 bg-surface-muted p-3">
-        <summary className="text-xs font-bold text-primary cursor-pointer">Source Clauses</summary>
-        <div className="mt-2 space-y-2">
-          {filtered.map((source, index) => (
-            <div key={`${source.file}-${index}`} className="text-xs text-outline">
-              <p className="font-semibold text-foreground">{source.file}</p>
-              <p>{source.excerpt}</p>
+      <details className="mt-4 rounded-xl border border-[#d4c5a9] bg-[#eae3d2]/30 p-3 select-none">
+        <summary className="text-xs font-bold text-[#155e54] cursor-pointer outline-none flex items-center gap-1.5 hover:text-[#84cc16] transition-colors">
+          <FileText size={12} />
+          Source Clauses & Verbatim Quotes
+        </summary>
+        <div className="mt-3 space-y-3 pl-1 select-text">
+          {visibleSources.map((source, index) => (
+            <div key={`${source.file}-${index}`} className="text-xs text-[#8c7e6b] space-y-1 border-t border-[#d4c5a9]/30 pt-2.5 first:border-0 first:pt-0">
+              <p className="font-bold text-[#2d261e] text-[10px] uppercase tracking-wider">📄 {source.file}</p>
+              <div className="prose prose-sm max-w-none text-[#2d261e] italic leading-relaxed bg-[#fbf9f4] p-3 rounded-lg border border-[#d4c5a9]/40">
+                <ReactMarkdown>{source.excerpt}</ReactMarkdown>
+              </div>
             </div>
           ))}
         </div>
@@ -56,119 +73,206 @@ export default function Chat() {
     );
   }, []);
 
+  const renderGraphNodes = useCallback((message: ChatItem) => {
+    if (!message.graphNodes || message.graphNodes.length === 0) {
+      return null;
+    }
+    return (
+      <details className="mt-3 rounded-xl border border-[#d4c5a9] bg-[#eae3d2]/30 p-3 select-none">
+        <summary className="text-xs font-bold text-[#155e54] cursor-pointer outline-none flex items-center gap-1.5 hover:text-[#84cc16] transition-colors">
+          <Waypoints size={12} />
+          Referenced Knowledge Nodes ({message.graphNodes.length})
+        </summary>
+        <ul className="mt-3 flex flex-wrap gap-1.5 pl-1">
+          {message.graphNodes.map((node) => (
+            <li key={node} className="rounded-full bg-[#155e54]/10 text-[#155e54] border border-[#d4c5a9]/40 px-3 py-0.5 text-[9px] font-bold uppercase tracking-wider">
+              {node}
+            </li>
+          ))}
+        </ul>
+      </details>
+    );
+  }, []);
+
   const submitQuestion = async (event: React.FormEvent) => {
     event.preventDefault();
     const question = input.trim();
-    if (!question || isLoading) {
+    if (!question || pendingQueryCount > 0) {
       return;
     }
 
+    if (activeDoc && activeDoc.status !== 'ready') {
+      return;
+    }
+    if (!activeDoc && readyDocuments.length === 0) {
+      return;
+    }
     setInput('');
-    addUserMessage(question);
-    setIsLoading(true);
+    await submitQueryInBackground(question);
+    requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }));
+  };
 
+  useEffect(() => {
+    let mounted = true;
+    const loadSettings = async () => {
+      try {
+        const settings = await getProviderSettings();
+        if (!mounted) return;
+        setIsLocalOllama(settings.mode === 'local_ollama');
+        setProviderStatusText(
+          settings.warning
+            ? settings.warning
+            : settings.mode === 'local_ollama'
+              ? `Local Active: LLM=${settings.query_model}, EMBED=${settings.embedding_model}`
+              : 'Cloud Active: Google Gemini fallback chain'
+        );
+      } catch {
+        if (mounted) {
+          setProviderStatusText('Ready to query workspaces.');
+        }
+      }
+    };
+    void loadSettings();
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const toggleProvider = async (nextLocal: boolean) => {
+    setIsUpdatingProvider(true);
     try {
-      const response = await queryDocument({
-        question,
-        doc_filter: activeDocId,
+      const settings = await setProviderSettings({
+        use_local_ollama: nextLocal,
+        query_model: 'qwen3:8b',
+        embedding_model: 'qwen3-embedding:8b',
+        embedding_dim: 4096,
       });
-      addAssistantMessage(response, activeDocId);
-      requestAnimationFrame(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }));
+      setIsLocalOllama(settings.mode === 'local_ollama');
+      setProviderStatusText(
+        settings.warning
+          ? settings.warning
+          : settings.mode === 'local_ollama'
+            ? `Local Active: LLM=${settings.query_model}, EMBED=${settings.embedding_model}`
+            : 'Cloud Active: Google Gemini fallback chain'
+      );
     } catch {
-      addAssistantMessage({
-        answer: 'Query failed. Ensure backend is running and indexed documents are ready.',
-        risk_level: 'UNKNOWN',
-        source_clauses: [],
-        graph_nodes_involved: [],
-      }, activeDocId);
+      setProviderStatusText('Unable to modify runtime provider.');
     } finally {
-      setIsLoading(false);
+      setIsUpdatingProvider(false);
     }
   };
 
   return (
-    <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 min-h-[calc(100vh-10rem)]">
+    <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 flex-1 min-h-[calc(100vh-12rem)]">
+      
+      {/* Collapsible Left Pane: Query Scope Selector */}
       {!docsCollapsed && (
-        <aside className="xl:col-span-3 glass-panel rounded-[1.5rem] p-5 shadow-[0_18px_36px_rgba(17,24,39,0.04)]">
-        <h2 className="font-serif font-extrabold text-2xl text-primary">Active Documents</h2>
-        <p className="text-sm text-outline mt-1 mb-5">Select a document for filtering answers</p>
+        <aside className="xl:col-span-3 parchment-card p-5 space-y-4 relative">
+          <div className="absolute top-3 left-3 w-3 h-3 border-t border-l border-[#8c7e6b]/40 pointer-events-none" />
+          <div className="absolute bottom-3 right-3 w-3 h-3 border-b border-r border-[#8c7e6b]/40 pointer-events-none" />
+          
+          <h2 className="font-headline font-bold text-xl text-[#155e54]">Scope Filter</h2>
+          <p className="text-xs text-[#8c7e6b] font-medium leading-relaxed">
+            Select a specific document to isolate search scope, or let PolicySattva automatically query all ready texts.
+          </p>
 
-        <div className="space-y-3">
-          <button
-            type="button"
-            onClick={() => setActiveDoc(null)}
-            className={[
-              'w-full text-left rounded-xl p-3 border transition-all',
-              activeDocId === null ? 'bg-emerald-50 border-emerald-200' : 'bg-white/85 border-transparent hover:border-border',
-            ].join(' ')}
-          >
-            <p className="font-semibold text-foreground">All Documents</p>
-            <p className="text-xs text-outline">doc_filter: null</p>
-          </button>
-
-          {documents.map((doc) => (
-            <button
-              key={doc.id}
-              type="button"
-              onClick={() => setActiveDoc(doc.id)}
-              className={[
-                'w-full text-left rounded-xl p-3 border transition-all',
-                activeDocId === doc.id ? 'bg-emerald-50 border-emerald-200' : 'bg-white/85 border-transparent hover:border-border',
-              ].join(' ')}
+          <div className="space-y-2 pt-2">
+            <label htmlFor="doc-filter-select" className="text-[10px] font-bold uppercase tracking-wider text-[#8c7e6b]">
+              Scope Target
+            </label>
+            <select
+              id="doc-filter-select"
+              value={activeDocId ?? ''}
+              onChange={(event) => setActiveDoc(event.target.value || null)}
+              className="w-full bg-white border border-[#d4c5a9] rounded-xl p-3 text-xs font-bold text-[#155e54] focus:outline-none"
             >
-              <p className="font-semibold text-foreground truncate">{doc.name}</p>
-              <p className="text-xs text-outline">status: {doc.status}</p>
-            </button>
-          ))}
-        </div>
+              <option value="">Auto (All ready docs)</option>
+              {readyDocuments.map((doc) => (
+                <option key={doc.id} value={doc.id}>
+                  {doc.name}
+                </option>
+              ))}
+            </select>
+          </div>
         </aside>
       )}
 
+      {/* Main Column: Chat Console */}
       <section
         className={[
-          'glass-panel rounded-[1.8rem] border border-white/60 shadow-[0_20px_40px_rgba(17,24,39,0.05)] flex flex-col overflow-hidden',
+          'parchment-card flex flex-col overflow-hidden relative border border-[#d4c5a9] min-h-[500px]',
           docsCollapsed ? 'xl:col-span-12' : 'xl:col-span-9',
         ].join(' ')}
       >
-        <div className="px-6 py-4 border-b border-border/50 bg-white/65 flex items-center justify-between">
+        {/* Subtle Decorative Borders */}
+        <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-[#8c7e6b]/40 pointer-events-none" />
+        <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-[#8c7e6b]/40 pointer-events-none" />
+
+        {/* Toolbar Header */}
+        <div className="px-6 py-4.5 border-b border-[#d4c5a9]/50 bg-[#eae3d2]/40 flex items-center justify-between z-10 select-none">
           <div>
-            <h3 className="font-serif font-extrabold text-xl text-primary">Query Analysis</h3>
-            <p className="text-xs text-outline">
-              {activeDoc ? `Filtering by ${activeDoc.name}` : 'Searching across all ready documents'}
+            <h3 className="font-headline font-bold text-lg text-[#155e54]">Risk Analysis Stream</h3>
+            <p className="text-[10px] text-[#8c7e6b] font-bold uppercase tracking-wider mt-0.5">
+              {activeDoc ? `Scoped: ${activeDoc.name}` : 'Scoped: Multi-Document Unified Context'}
             </p>
           </div>
-          <div className="flex items-center gap-2 md:gap-3 text-primary text-sm font-semibold">
+
+          <div className="flex items-center gap-2.5 text-xs font-bold">
             <button
               type="button"
               onClick={() => setDocsCollapsed((current) => !current)}
-              className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-white/85 px-3 py-1.5 text-xs font-bold text-primary hover:bg-white transition-all"
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#d4c5a9] bg-[#fbf9f4] px-3.5 py-1.5 text-xs text-[#155e54] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-sm"
             >
-              {docsCollapsed ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
-              {docsCollapsed ? 'Show Docs' : 'Hide Docs'}
+              {docsCollapsed ? <PanelLeftOpen size={13} /> : <PanelLeftClose size={13} />}
+              {docsCollapsed ? 'Show Scope' : 'Hide Scope'}
             </button>
 
             {hasCompletedChat && (
               <button
                 type="button"
-                onClick={() => navigate('/graph')}
-                className="inline-flex items-center gap-2 rounded-full border border-border/60 bg-white/85 px-3 py-1.5 text-xs font-bold text-primary hover:bg-white transition-all"
+                onClick={startNewChatSession}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#d4c5a9] bg-[#fbf9f4] px-3.5 py-1.5 text-xs text-[#155e54] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-sm"
               >
-                <Waypoints size={14} />
-                Graph
+                <RotateCcw size={13} />
+                Clear
               </button>
             )}
 
-            <span className="hidden sm:inline-flex items-center gap-2">
-              <FileText size={16} />
-              /query
-            </span>
+            {hasCompletedChat && (
+              <button
+                type="button"
+                onClick={() => navigate('/graph')}
+                className="inline-flex items-center gap-1.5 rounded-full border border-[#d4c5a9] bg-[#fbf9f4] px-3.5 py-1.5 text-xs text-[#155e54] hover:bg-white hover:scale-105 active:scale-95 transition-all shadow-sm"
+              >
+                <Waypoints size={13} />
+                View Graph
+              </button>
+            )}
+
+            <button
+              type="button"
+              disabled={isUpdatingProvider}
+              onClick={() => void toggleProvider(!isLocalOllama)}
+              className="inline-flex items-center gap-1.5 rounded-full border border-[#d4c5a9] bg-[#fbf9f4] px-3.5 py-1.5 text-xs text-[#155e54] hover:bg-white hover:scale-105 active:scale-95 transition-all disabled:opacity-60 shadow-sm"
+              title="Toggle between cloud and local Ollama"
+            >
+              {isLocalOllama ? <Server size={13} /> : <Cloud size={13} />}
+              {isLocalOllama ? 'Local Ollama' : 'Cloud'}
+            </button>
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-5">
+        {/* Messaging Stream */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 space-y-6">
           {chatHistory.length === 0 && (
-            <div className="rounded-2xl border border-border/60 bg-white/80 p-6 text-outline text-sm">
-              Ask your first question. Response will include risk level, source clauses, and graph nodes.
+            <div className="rounded-2xl border border-dashed border-[#d4c5a9] bg-[#fbf9f4] p-8 text-center text-xs text-[#8c7e6b] font-medium leading-relaxed max-w-xl mx-auto">
+              📜 Enter a query below to segment liability details. PolicySattva will retrieve matching sections, calculate risk levels, and present citations automatically.
+            </div>
+          )}
+
+          {providerStatusText && (
+            <div className="rounded-xl border border-[#d4c5a9]/50 bg-[#eae3d2]/25 px-4 py-2 text-[10px] font-bold text-[#8c7e6b] uppercase tracking-wider max-w-fit select-none">
+              ⚡ {providerStatusText}
             </div>
           )}
 
@@ -176,34 +280,37 @@ export default function Chat() {
             <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
               <div
                 className={[
-                  'max-w-[84%] rounded-2xl p-4',
+                  'max-w-[90%] sm:max-w-[85%] rounded-2xl p-4 sm:p-5 shadow-[0_3px_10px_rgba(0,0,0,0.015)] border',
                   message.role === 'user'
-                    ? 'bg-primary text-white rounded-tr-md'
-                    : 'bg-white/90 border border-border/60 text-foreground rounded-tl-md',
+                    ? 'bg-[#155e54] text-white border-transparent rounded-tr-sm'
+                    : 'bg-[#fbf9f4] border-[#d4c5a9]/80 text-[#2d261e] rounded-tl-sm',
                 ].join(' ')}
               >
-                <p className="text-sm leading-relaxed">{message.content}</p>
+                <div className="prose prose-sm max-w-none text-xs sm:text-sm leading-relaxed font-medium">
+                  <ReactMarkdown>{message.content}</ReactMarkdown>
+                </div>
 
                 {message.role === 'assistant' && (
-                  <>
+                  <div className="mt-4 border-t border-[#d4c5a9]/30 pt-3">
                     {message.risk && (
                       <span
                         className={[
-                          'inline-flex mt-3 text-[10px] font-bold uppercase tracking-[0.1em] px-2 py-1 rounded',
+                          'inline-flex text-[9px] font-extrabold uppercase tracking-widest px-3 py-1 rounded-full border',
                           message.risk === 'HIGH'
-                            ? 'bg-rose-100 text-rose-700'
+                            ? 'bg-rose-100 text-rose-800 border-rose-200'
                             : message.risk === 'MEDIUM'
-                              ? 'bg-amber-100 text-amber-800'
+                              ? 'bg-amber-100 text-amber-800 border-amber-200'
                               : message.risk === 'LOW'
-                                ? 'bg-emerald-100 text-emerald-700'
-                                : 'bg-slate-100 text-slate-700',
+                                ? 'bg-lime-100 text-lime-800 border-lime-200 glow-highlight'
+                                : 'bg-slate-100 text-slate-700 border-slate-200',
                         ].join(' ')}
                       >
-                        {message.risk}
+                        🛡️ {message.risk} RISK
                       </span>
                     )}
 
                     {renderSources(message)}
+                    {renderGraphNodes(message)}
 
                     {message.graphNodes && message.graphNodes.length > 0 && (
                       <button
@@ -212,40 +319,46 @@ export default function Chat() {
                           setHighlightedNodes(message.graphNodes ?? []);
                           navigate('/graph');
                         }}
-                        className="mt-3 text-xs font-bold text-primary hover:opacity-70"
+                        className="mt-4 inline-flex items-center gap-1 text-[10px] font-extrabold text-[#155e54] hover:text-[#84cc16] uppercase tracking-wider"
                       >
-                        View in Graph
+                        Inspect in Canvas <ArrowRight size={10} />
                       </button>
                     )}
-                  </>
+                  </div>
                 )}
               </div>
             </div>
           ))}
 
-          {isLoading && (
-            <div className="rounded-2xl border border-border/60 bg-white/80 p-4 text-sm text-outline animate-pulse">
-              Analyzing document...
+          {pendingQueryCount > 0 && (
+            <div className="rounded-2xl border border-[#d4c5a9]/60 bg-[#fbf9f4]/60 p-5 text-xs text-[#8c7e6b] font-bold animate-pulse uppercase tracking-wider">
+              ⏳ Simplifying covenants and verifying clauses...
             </div>
           )}
           <div ref={endRef} />
         </div>
 
-        <div className="p-5 bg-gradient-to-t from-white via-white/90 to-transparent border-t border-border/45">
+        {/* Input Bar */}
+        <div className="p-5 bg-gradient-to-t from-[#fbf9f4] via-[#fbf9f4]/80 to-transparent border-t border-[#d4c5a9]/40 z-10">
+          {readyDocuments.length === 0 && (
+            <p className="max-w-4xl mx-auto mb-3 text-xs font-bold text-rose-800 text-center">
+              ⚠ No document is ready. Upload a PDF in the Upload tab to activate querying.
+            </p>
+          )}
           <form onSubmit={submitQuestion} className="max-w-4xl mx-auto relative group">
             <input
               type="text"
               value={input}
               onChange={(event) => setInput(event.target.value)}
-              placeholder="Ask PolicySattva anything about your documents..."
-              className="w-full bg-white border border-border/60 rounded-full py-4 px-6 pr-16 shadow-[0_10px_24px_rgba(0,0,0,0.05)] focus:outline-none focus:ring-2 focus:ring-[var(--ring)] text-foreground placeholder:text-outline/75 text-[15px]"
+              placeholder="Ask anything about liabilities, dispute clauses, and safety conditions..."
+              className="w-full bg-[#fbf9f4] border border-[#d4c5a9] rounded-full py-4.5 px-6 pr-16 shadow-[0_8px_20px_rgba(45,38,30,0.03)] focus:outline-none focus:ring-1 focus:ring-[#155e54] text-sm text-[#2d261e] placeholder:text-[#8c7e6b]/70 font-semibold"
             />
             <button
               type="submit"
-              disabled={!input.trim() || isLoading}
-              className="absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 bg-primary rounded-full flex items-center justify-center text-white shadow-md hover:brightness-110 disabled:bg-[#96a9a7] disabled:cursor-not-allowed transition-all"
+              disabled={!input.trim() || pendingQueryCount > 0 || readyDocuments.length === 0}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 w-11 h-11 bg-[#155e54] rounded-full flex items-center justify-center text-white shadow-md hover:bg-[#84cc16] hover:scale-105 active:scale-95 disabled:bg-[#8c7e6b]/50 disabled:cursor-not-allowed transition-all"
             >
-              <Send size={17} strokeWidth={2.3} className={input.trim() ? 'translate-x-[1px]' : ''} />
+              <Send size={15} strokeWidth={2.3} />
             </button>
           </form>
         </div>
