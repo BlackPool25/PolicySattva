@@ -295,6 +295,24 @@ def _load_all_documents() -> list[DocumentListItem]:
     return all_docs
 
 
+async def _unload_ollama_models() -> None:
+    primary_provider = os.getenv("PRIMARY_LLM_PROVIDER", "ollama").strip().lower()
+    if primary_provider == "ollama":
+        from llm_provider import _resolve_ollama_url
+        ollama_base = _resolve_ollama_url(os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").strip())
+        llm_model = os.getenv("OLLAMA_LLM_MODEL", "qwen3.5:9b").strip()
+        embed_model = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b").strip()
+        try:
+            import httpx
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                logger.info("Auto-unloading Ollama LLM model: %s", llm_model)
+                await client.post(f"{ollama_base}/api/chat", json={"model": llm_model, "keep_alive": 0})
+                logger.info("Auto-unloading Ollama embedding model: %s", embed_model)
+                await client.post(f"{ollama_base}/api/chat", json={"model": embed_model, "keep_alive": 0})
+        except Exception as unload_exc:
+            logger.warning("Failed to auto-unload Ollama models: %s", unload_exc)
+
+
 async def _run_indexing(company_id: str, doc_id: str, saved_path: str) -> None:
     status_key = f"{company_id}/{doc_id}"
     lock = _get_indexing_lock(status_key)
@@ -315,20 +333,7 @@ async def _run_indexing(company_id: str, doc_id: str, saved_path: str) -> None:
             indexing_status[status_key] = "failed"
             logger.exception("Indexing failed company=%s doc=%s: %s", company_id, doc_id, exc)
         finally:
-            primary_provider = os.getenv("PRIMARY_LLM_PROVIDER", "ollama").strip().lower()
-            if primary_provider == "ollama":
-                ollama_base = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").strip()
-                llm_model = os.getenv("OLLAMA_LLM_MODEL", "qwen3.5:9b").strip()
-                embed_model = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b").strip()
-                try:
-                    import httpx
-                    async with httpx.AsyncClient(timeout=10.0) as client:
-                        logger.info("Auto-unloading Ollama LLM model: %s", llm_model)
-                        await client.post(f"{ollama_base}/api/chat", json={"model": llm_model, "keep_alive": 0})
-                        logger.info("Auto-unloading Ollama embedding model: %s", embed_model)
-                        await client.post(f"{ollama_base}/api/chat", json={"model": embed_model, "keep_alive": 0})
-                except Exception as unload_exc:
-                    logger.warning("Failed to auto-unload Ollama models: %s", unload_exc)
+            await _unload_ollama_models()
 
 
 async def _indexing_worker_handler(task_data: dict) -> None:
@@ -523,16 +528,17 @@ async def query_endpoint(body: QueryRequest) -> QueryResponse:
     safe_company = _safe_company_id(body.company_id)
     try:
         result = await lightrag_engine.query(body.question, safe_company, doc_filter=body.doc_filter)
+        source_clauses = [SourceClause(**clause) for clause in result.get("source_clauses", [])]
+        return QueryResponse(
+            answer=str(result.get("answer", "")),
+            risk_level=str(result.get("risk_level", "UNKNOWN")),
+            source_clauses=source_clauses,
+            graph_nodes_involved=[str(n) for n in result.get("graph_nodes_involved", [])],
+        )
     except Exception as exc:
         raise HTTPException(status_code=500, detail=f"Query failed: {exc}") from exc
-
-    source_clauses = [SourceClause(**clause) for clause in result.get("source_clauses", [])]
-    return QueryResponse(
-        answer=str(result.get("answer", "")),
-        risk_level=str(result.get("risk_level", "UNKNOWN")),
-        source_clauses=source_clauses,
-        graph_nodes_involved=[str(n) for n in result.get("graph_nodes_involved", [])],
-    )
+    finally:
+        await _unload_ollama_models()
 
 
 @app.get("/graph", response_model=GraphResponse)
