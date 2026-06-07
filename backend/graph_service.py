@@ -31,6 +31,73 @@ def _neo4j_reachable() -> bool:
     return False
 
 
+def _graph_from_vdb_json(company_id: str) -> dict[str, Any]:
+    """Read graph data from LightRAG's NanoVectorDB JSON files."""
+    if company_id == "default_company":
+        company_dir = get_active_rag_storage_dir()
+    else:
+        company_dir = get_active_rag_storage_dir() / company_id
+
+    entities_path = company_dir / "vdb_entities.json"
+    rels_path = company_dir / "vdb_relationships.json"
+
+    nodes = []
+    if entities_path.exists():
+        try:
+            with open(entities_path, encoding="utf-8") as f:
+                data = json.load(f)
+            records = data.get("data") if isinstance(data, dict) else data
+            if isinstance(records, list):
+                seen = set()
+                for rec in records:
+                    name = str(rec.get("entity_name", "")).strip()
+                    if not name or name.lower() in seen:
+                        continue
+                    seen.add(name.lower())
+                    nodes.append({"id": name, "label": name, "type": "entity"})
+        except Exception as exc:
+            logger.warning("Failed to read vdb_entities.json for %s: %s", company_id, exc)
+
+    if not nodes:
+        return _empty_graph()
+
+    node_ids = {n["id"] for n in nodes}
+    edges = []
+    if rels_path.exists():
+        try:
+            with open(rels_path, encoding="utf-8") as f:
+                data = json.load(f)
+            records = data.get("data") if isinstance(data, dict) else data
+            if isinstance(records, list):
+                seen = set()
+                for rec in records:
+                    src = str(rec.get("src_id", "")).strip()
+                    tgt = str(rec.get("tgt_id", "")).strip()
+                    if not src or not tgt:
+                        continue
+                    pair = (src, tgt)
+                    if pair in seen:
+                        continue
+                    seen.add(pair)
+                    if src in node_ids and tgt in node_ids:
+                        label = "RELATED_TO"
+                        content = rec.get("content", "")
+                        if content:
+                            kw = content.split(",")[0].strip().upper().replace(" ", "_")[:50]
+                            if kw:
+                                label = kw
+                        edges.append({"source": src, "target": tgt, "label": label})
+        except Exception as exc:
+            logger.warning("Failed to read vdb_relationships.json for %s: %s", company_id, exc)
+
+    clean_nodes, clean_edges = _filter_hallucinated_nodes(nodes[:300], edges[:300], company_id)
+    return {
+        "nodes": clean_nodes,
+        "edges": clean_edges,
+        "stats": {"node_count": len(clean_nodes), "edge_count": len(clean_edges)},
+    }
+
+
 def _graph_from_networkx_json(company_id: str, doc_filter: str | None) -> dict[str, Any]:
     """Read graph data from LightRAG's NetworkX graphml file."""
     if company_id == "default_company":
@@ -39,7 +106,7 @@ def _graph_from_networkx_json(company_id: str, doc_filter: str | None) -> dict[s
         company_dir = get_active_rag_storage_dir() / company_id
     graphml = company_dir / "graph_chunk_entity_relation.graphml"
     if not graphml.exists():
-        return _empty_graph()
+        return _graph_from_vdb_json(company_id)
     try:
         import xml.etree.ElementTree as ET
         tree = ET.parse(graphml)
@@ -88,7 +155,7 @@ def _graph_from_networkx_json(company_id: str, doc_filter: str | None) -> dict[s
         }
     except Exception as exc:
         logger.warning("Failed to read NetworkX graph for %s: %s", company_id, exc)
-        return _empty_graph()
+        return _graph_from_vdb_json(company_id)
 def _safe_load_json(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {}

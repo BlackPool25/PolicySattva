@@ -81,16 +81,86 @@ def parse_graphml(graphml_path: Path) -> tuple[list[dict], list[dict]]:
 
     return nodes, edges
 
+def _load_entities_from_vdb(company_dir: Path) -> list[dict]:
+    """Read entities from NanoVectorDB JSON files when GraphML is unavailable."""
+    vdb_path = company_dir / "vdb_entities.json"
+    if not vdb_path.exists():
+        return []
+    try:
+        with open(vdb_path, encoding="utf-8") as f:
+            data = json.load(f)
+        records = data.get("data") if isinstance(data, dict) else data
+        if isinstance(records, list):
+            nodes = []
+            seen = set()
+            for rec in records:
+                name = str(rec.get("entity_name", "")).strip()
+                if not name or name.lower() in seen:
+                    continue
+                seen.add(name.lower())
+                nodes.append({
+                    "entity_id": name,
+                    "entity_type": "entity",
+                    "description": rec.get("content", ""),
+                    "source_id": rec.get("source_id", ""),
+                })
+            return nodes
+    except Exception as exc:
+        print(f"    [!] Error reading vdb_entities.json: {exc}")
+    return []
+
+
+def _load_relations_from_vdb(company_dir: Path) -> list[dict]:
+    """Read relationships from NanoVectorDB JSON files when GraphML is unavailable."""
+    vdb_path = company_dir / "vdb_relationships.json"
+    if not vdb_path.exists():
+        return []
+    try:
+        with open(vdb_path, encoding="utf-8") as f:
+            data = json.load(f)
+        records = data.get("data") if isinstance(data, dict) else data
+        if isinstance(records, list):
+            edges = []
+            seen = set()
+            for rec in records:
+                src = str(rec.get("src_id", "")).strip()
+                tgt = str(rec.get("tgt_id", "")).strip()
+                if not src or not tgt:
+                    continue
+                pair = (src.lower(), tgt.lower())
+                if pair in seen:
+                    continue
+                seen.add(pair)
+                edges.append({
+                    "source": src,
+                    "target": tgt,
+                    "weight": 1.0,
+                    "description": rec.get("content", ""),
+                    "keywords": "",
+                    "source_id": rec.get("source_id", ""),
+                })
+            return edges
+    except Exception as exc:
+        print(f"    [!] Error reading vdb_relationships.json: {exc}")
+    return []
+
+
 def migrate_company(company_id: str, driver, database: str):
     company_dir = get_active_rag_storage_dir() / company_id
     graphml_path = company_dir / "graph_chunk_entity_relation.graphml"
     
-    if not graphml_path.exists():
-        print(f"[-] No local GraphML file found for company '{company_id}'. Skipping.")
-        return
+    nodes, edges = [], []
+    if graphml_path.exists():
+        print(f"[*] Parsing GraphML for '{company_id}' from {graphml_path}...")
+        nodes, edges = parse_graphml(graphml_path)
+    else:
+        print(f"[-] No GraphML file found for '{company_id}'. Trying NanoVectorDB JSON files...")
+        nodes = _load_entities_from_vdb(company_dir)
+        edges = _load_relations_from_vdb(company_dir)
 
-    print(f"[*] Parsing GraphML for '{company_id}' from {graphml_path}...")
-    nodes, edges = parse_graphml(graphml_path)
+    if not nodes:
+        print(f"[-] No entity data found for '{company_id}'. Skipping.")
+        return
     print(f"[+] Found {len(nodes)} nodes and {len(edges)} edges to migrate.")
 
     if not nodes:
