@@ -378,6 +378,26 @@ async def get_subgraph_for_doc(node_ids: list[str], doc_filter: str | None, comp
         return _empty_graph()
 
 
+def clean_entity_description(desc: str) -> str:
+    if not desc:
+        return ""
+    import re
+    parts = re.split(r"(?i)<sep>", desc)
+    seen = set()
+    cleaned_parts = []
+    for part in parts:
+        p = part.strip()
+        if not p:
+            continue
+        p_lower = p.lower()
+        if p_lower not in seen:
+            seen.add(p_lower)
+            if not p.endswith((".", "!", "?", ";")):
+                p += "."
+            cleaned_parts.append(p)
+    return "\n\n".join(cleaned_parts)
+
+
 async def get_node_details(node_id: str) -> dict[str, Any]:
     if not node_id:
         return {"id": node_id, "label": node_id, "description": "", "type": "entity", "source_files": []}
@@ -402,7 +422,7 @@ async def get_node_details(node_id: str) -> dict[str, Any]:
             return {"id": node_id, "label": node_id, "description": "", "type": "entity", "source_files": []}
 
         record = records[0]
-        description = str(record.get("description") or "").strip()
+        description = clean_entity_description(str(record.get("description") or ""))
         entity_type = str(record.get("entity_type") or "entity").strip()
         source_id = str(record.get("source_id") or "").strip()
 

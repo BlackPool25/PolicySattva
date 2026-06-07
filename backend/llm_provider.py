@@ -487,7 +487,24 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         keyword_extraction: bool = False,
         **kwargs: object,
     ) -> str:
+        # Clean <SEP> (case-insensitive) from prompts to prevent LLM from hallucinating/outputting it
+        if isinstance(prompt, str):
+            prompt = re.sub(r"(?i)\s*<sep>\s*", " ", prompt)
+        if isinstance(system_prompt, str):
+            system_prompt = re.sub(r"(?i)\s*<sep>\s*", " ", system_prompt)
+
         messages = history_messages if history_messages is not None else []
+        if messages:
+            messages = [
+                {
+                    **msg,
+                    "content": re.sub(r"(?i)\s*<sep>\s*", " ", msg["content"])
+                    if isinstance(msg.get("content"), str)
+                    else msg.get("content"),
+                }
+                for msg in messages
+            ]
+
         ordered = provider_priority_map[primary_provider]
         errors: list[str] = []
 
