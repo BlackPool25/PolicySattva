@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { cn, listDocuments, deleteDocument, useAppStore, listWorkspaces } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
+import { DocumentProgress } from './DocumentProgress';
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const location = useLocation();
@@ -252,7 +253,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
                       const isSelected = activeDocId === doc.id;
                       return (
                         <div
-                          key={doc.id}
+                          key={doc.name}
                           onClick={() => doc.status === 'ready' && setActiveDoc(isSelected ? null : doc.id)}
                           className={cn(
                             "group flex items-center justify-between p-3 rounded-xl border transition-all cursor-pointer shadow-[0_2px_4px_rgba(0,0,0,0.02)]",
@@ -268,11 +269,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
                             )}>
                               <FileText size={14} />
                             </div>
-                            <div className="min-w-0">
+                            <div className="min-w-0 flex-1">
                               <p className="text-[11px] font-semibold truncate text-[#2d261e]">{doc.name}</p>
                               <p className="text-[9px] text-[#8c7e6b] uppercase tracking-wider font-bold">
                                 {doc.status}
                               </p>
+                              <DocumentProgress status={doc.status} />
                             </div>
                           </div>
 

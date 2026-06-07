@@ -16,6 +16,7 @@ services:
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - NEO4J_URI=neo4j://neo4j:7687
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
@@ -28,11 +29,13 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_BASE_URL=http://localhost:8008
     container_name: policysattva-frontend
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_BASE_URL=http://localhost:8000
+      - VITE_API_BASE_URL=http://localhost:8008
     depends_on:
       - backend
 

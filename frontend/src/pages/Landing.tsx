@@ -9,6 +9,7 @@ import {
   getProviderSettings,
   setProviderSettings,
 } from '../lib/utils';
+import { DocumentProgress } from '../components/DocumentProgress';
 
 export default function Landing() {
   const navigate = useNavigate();
@@ -229,7 +230,7 @@ export default function Landing() {
               const StatusIcon = Style.icon;
               return (
                 <button
-                  key={doc.id}
+                  key={doc.name}
                   type="button"
                   onClick={() => doc.status === 'ready' && setActiveDoc(doc.id)}
                   className={[
@@ -240,11 +241,12 @@ export default function Landing() {
                   ].join(' ')}
                 >
                   <div className="flex justify-between items-start gap-3">
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <p className="font-bold text-[#2d261e] text-xs sm:text-sm truncate">{doc.name}</p>
                       <p className="text-[10px] text-[#8c7e6b] font-bold mt-1 uppercase tracking-wider truncate">
                         ID: {doc.id}
                       </p>
+                      <DocumentProgress status={doc.status} />
                     </div>
                     <span className={`text-[9px] px-2.5 py-1 border rounded-full font-bold uppercase tracking-wider flex items-center gap-1 ${Style.bg}`}>
                       <StatusIcon size={10} />

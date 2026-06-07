@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8008";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -206,20 +206,27 @@ export const useAppStore = create<AppStore>()(
       setCompanyId: (companyId) => set({ companyId, documents: [], activeDocId: null }),
       setDocuments: (docs) =>
         set((state) => {
-          const hasActiveDoc = docs.some((doc) => doc.id === state.activeDocId);
+          if (!state.activeDocId) {
+            return { documents: docs, activeDocId: null };
+          }
+          const matchingDoc = docs.find(
+            (doc) => doc.id === state.activeDocId || doc.name === state.activeDocId
+          );
           return {
             documents: docs,
-            activeDocId: hasActiveDoc ? state.activeDocId : null,
+            activeDocId: matchingDoc ? matchingDoc.id : null,
           };
         }),
       upsertDocument: (doc) =>
         set((state) => {
-          const exists = state.documents.some((item) => item.id === doc.id);
+          const exists = state.documents.some((item) => item.id === doc.id || item.name === doc.name);
           if (!exists) {
             return { documents: [doc, ...state.documents] };
           }
           return {
-            documents: state.documents.map((item) => (item.id === doc.id ? doc : item)),
+            documents: state.documents.map((item) =>
+              item.id === doc.id || item.name === doc.name ? doc : item
+            ),
           };
         }),
       setDocumentStatus: (docId, status) =>

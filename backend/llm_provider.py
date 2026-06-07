@@ -92,13 +92,51 @@ def _resolve_ollama_url(url: str) -> str:
     return url
 
 
+_cached_ollama_dim = None
+
+def _resolve_ollama_embed_dim(model_name: str, base_url: str, default_dim: int) -> int:
+    global _cached_ollama_dim
+    if _cached_ollama_dim is not None:
+        return _cached_ollama_dim
+
+    # Check env first
+    env_val = os.getenv("OLLAMA_EMBED_DIM")
+    if env_val:
+        try:
+            val = int(_strip_inline_comment(env_val))
+            _cached_ollama_dim = val
+            return val
+        except ValueError:
+            pass
+
+    # Try auto-detect
+    try:
+        with httpx.Client(timeout=3.0) as client:
+            res = client.post(
+                f"{base_url}/api/show",
+                json={"name": model_name}
+            )
+            if res.status_code == 200:
+                info = res.json().get("model_info", {})
+                for k, v in info.items():
+                    if k.endswith(".embedding_length") and isinstance(v, int):
+                        logger.info("Auto-detected embedding length %d for model %s", v, model_name)
+                        _cached_ollama_dim = v
+                        return v
+    except Exception as exc:
+        logger.warning("Failed to auto-detect Ollama embedding dimension: %s", exc)
+
+    _cached_ollama_dim = default_dim
+    return default_dim
+
+
 def get_embedding_func() -> Callable[[list[str]], Awaitable[np.ndarray]]:
     """Return a LightRAG-compatible embedding function."""
     embed_provider = _getenv("EMBED_PROVIDER", "gemini").lower()
     gemini_api_key = _getenv("GEMINI_API_KEY")
     ollama_base_url = _resolve_ollama_url(_getenv("OLLAMA_BASE_URL", "http://localhost:11434"))
     ollama_embed_model = _getenv("OLLAMA_EMBED_MODEL", OLLAMA_EMBED_MODEL)
-    ollama_embed_dim = int(_getenv("OLLAMA_EMBED_DIM", str(OLLAMA_EMBED_DIM)) or str(OLLAMA_EMBED_DIM))
+    ollama_embed_dim = _resolve_ollama_embed_dim(ollama_embed_model, ollama_base_url, OLLAMA_EMBED_DIM)
 
     logger.info(
         "Embedding provider=%s model=%s dim=%s",
@@ -192,7 +230,8 @@ def get_active_index_namespace() -> str:
     embed_provider = _getenv("EMBED_PROVIDER", "gemini").lower()
     if embed_provider == "ollama":
         model = _getenv("OLLAMA_EMBED_MODEL", OLLAMA_EMBED_MODEL).lower()
-        dim = int(_getenv("OLLAMA_EMBED_DIM", str(OLLAMA_EMBED_DIM)) or str(OLLAMA_EMBED_DIM))
+        base_url = _resolve_ollama_url(_getenv("OLLAMA_BASE_URL", "http://localhost:11434"))
+        dim = _resolve_ollama_embed_dim(model, base_url, OLLAMA_EMBED_DIM)
     else:
         model = GEMINI_EMBED_MODEL.lower()
         dim = GEMINI_EMBED_DIM
