@@ -134,6 +134,14 @@ app.add_middleware(
 
 # In-memory status for in-flight indexing jobs: key = "<company_id>/<doc_filename>"
 indexing_status: dict[str, str] = {}
+indexing_locks: dict[str, asyncio.Lock] = {}
+
+
+def _get_indexing_lock(status_key: str) -> asyncio.Lock:
+    if status_key not in indexing_locks:
+        indexing_locks[status_key] = asyncio.Lock()
+    return indexing_locks[status_key]
+
 
 
 # ---------------------------------------------------------------------------
@@ -289,12 +297,38 @@ def _load_all_documents() -> list[DocumentListItem]:
 
 async def _run_indexing(company_id: str, doc_id: str, saved_path: str) -> None:
     status_key = f"{company_id}/{doc_id}"
-    try:
-        await lightrag_engine.index_document(saved_path, company_id)
-        indexing_status[status_key] = "ready"
-    except Exception as exc:
-        indexing_status[status_key] = "failed"
-        logger.exception("Indexing failed company=%s doc=%s: %s", company_id, doc_id, exc)
+    lock = _get_indexing_lock(status_key)
+
+    if lock.locked():
+        logger.warning("Indexing task already running for %s, skipping duplicate execution.", status_key)
+        return
+
+    async with lock:
+        try:
+            # Double check status before starting expensive operation
+            if indexing_status.get(status_key) == "ready":
+                logger.info("Document %s already indexed, skipping duplicate.", status_key)
+                return
+            await lightrag_engine.index_document(saved_path, company_id)
+            indexing_status[status_key] = "ready"
+        except Exception as exc:
+            indexing_status[status_key] = "failed"
+            logger.exception("Indexing failed company=%s doc=%s: %s", company_id, doc_id, exc)
+        finally:
+            primary_provider = os.getenv("PRIMARY_LLM_PROVIDER", "ollama").strip().lower()
+            if primary_provider == "ollama":
+                ollama_base = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434").strip()
+                llm_model = os.getenv("OLLAMA_LLM_MODEL", "qwen3.5:9b").strip()
+                embed_model = os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:0.6b").strip()
+                try:
+                    import httpx
+                    async with httpx.AsyncClient(timeout=10.0) as client:
+                        logger.info("Auto-unloading Ollama LLM model: %s", llm_model)
+                        await client.post(f"{ollama_base}/api/chat", json={"model": llm_model, "keep_alive": 0})
+                        logger.info("Auto-unloading Ollama embedding model: %s", embed_model)
+                        await client.post(f"{ollama_base}/api/chat", json={"model": embed_model, "keep_alive": 0})
+                except Exception as unload_exc:
+                    logger.warning("Failed to auto-unload Ollama models: %s", unload_exc)
 
 
 async def _indexing_worker_handler(task_data: dict) -> None:
@@ -335,6 +369,40 @@ async def ingest(
     doc_id = Path(file.filename).name
     saved_path = str(documents_dir / doc_id)
     status_key = f"{safe_company}/{doc_id}"
+
+    # Check lock and indexing status to prevent duplicate indexing
+    current_status = indexing_status.get(status_key)
+    if current_status == "indexing":
+        return IngestResponse(
+            status="indexing",
+            doc_id=doc_id,
+            message=f"Document '{doc_id}' is already being indexed."
+        )
+    elif current_status == "ready":
+        return IngestResponse(
+            status="ready",
+            doc_id=doc_id,
+            message=f"Document '{doc_id}' is already indexed."
+        )
+
+    # Check database status as well
+    existing_docs = _load_documents_for_company(safe_company)
+    for doc in existing_docs:
+        if doc.name == doc_id:
+            if doc.status == "indexing":
+                indexing_status[status_key] = "indexing"
+                return IngestResponse(
+                    status="indexing",
+                    doc_id=doc_id,
+                    message=f"Document '{doc_id}' is already being indexed."
+                )
+            elif doc.status == "ready":
+                indexing_status[status_key] = "ready"
+                return IngestResponse(
+                    status="ready",
+                    doc_id=doc_id,
+                    message=f"Document '{doc_id}' is already indexed."
+                )
 
     try:
         content = await file.read()
