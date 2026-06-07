@@ -181,8 +181,12 @@ def _load_documents_for_company(company_id: str) -> list[DocumentListItem]:
         database_name = os.getenv("MONGO_DATABASE", "policysattva").strip()
         client = MongoClient(mongo_uri)
         db = client[database_name]
-        full_docs_coll = db[f"{company_id}_full_docs"]
-        doc_status_coll = db[f"{company_id}_doc_status"]
+        if company_id == "default_company":
+            full_docs_coll = db["full_docs"]
+            doc_status_coll = db["doc_status"]
+        else:
+            full_docs_coll = db[f"{company_id}_full_docs"]
+            doc_status_coll = db[f"{company_id}_doc_status"]
         docs: list[DocumentListItem] = []
         for doc in full_docs_coll.find():
             doc_key = doc.get("_id", "")
@@ -197,7 +201,10 @@ def _load_documents_for_company(company_id: str) -> list[DocumentListItem]:
             docs.append(DocumentListItem(id=doc_key, name=doc_name, status=status, company_id=company_id))
         client.close()
     else:
-        company_dir = get_active_rag_storage_dir() / company_id
+        if company_id == "default_company":
+            company_dir = get_active_rag_storage_dir()
+        else:
+            company_dir = get_active_rag_storage_dir() / company_id
         full_docs = _safe_load_json(company_dir / "kv_store_full_docs.json")
         doc_status = _safe_load_json(company_dir / "kv_store_doc_status.json")
         docs: list[DocumentListItem] = []
@@ -246,12 +253,16 @@ def _load_all_documents() -> list[DocumentListItem]:
         for coll_name in db.list_collection_names():
             if coll_name.endswith("_full_docs"):
                 companies.add(coll_name[: -len("_full_docs")])
+        if "full_docs" in db.list_collection_names():
+            companies.add("default_company")
         client.close()
     else:
         base = get_active_rag_storage_dir()
         if not base.exists():
             return []
         companies = {d.name for d in base.iterdir() if d.is_dir()}
+        if (base / "kv_store_full_docs.json").exists():
+            companies.add("default_company")
 
     all_docs: list[DocumentListItem] = []
     for company_id in sorted(companies):

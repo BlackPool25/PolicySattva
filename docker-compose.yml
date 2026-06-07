@@ -7,20 +7,22 @@ services:
       dockerfile: Dockerfile
     container_name: policysattva-backend
     ports:
-      - "8000:8000"
+      - "8008:8000"
     volumes:
       - ./backend/rag_storage:/app/rag_storage
       - ./backend/documents:/app/documents
     env_file:
       - .env
     environment:
-      - REDIS_HOST=host.docker.internal
-      - REDIS_PORT=6380
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     extra_hosts:
       - "host.docker.internal:host-gateway"
     depends_on:
       neo4j:
         condition: service_healthy
+      redis:
+        condition: service_started
 
   frontend:
     build:
@@ -37,9 +39,6 @@ services:
   neo4j:
     image: neo4j:5.15-community
     container_name: policysattva-neo4j
-    ports:
-      - "7474:7474"
-      - "7687:7687"
     environment:
       - NEO4J_AUTH=neo4j/policysattva_password
     volumes:
@@ -52,6 +51,12 @@ services:
       retries: 5
       start_period: 10s
 
+  redis:
+    image: redis:7-alpine
+    container_name: policysattva-redis
+
 volumes:
   neo4j_data:
   neo4j_logs:
+
+

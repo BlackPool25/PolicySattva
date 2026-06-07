@@ -33,7 +33,10 @@ def _neo4j_reachable() -> bool:
 
 def _graph_from_networkx_json(company_id: str, doc_filter: str | None) -> dict[str, Any]:
     """Read graph data from LightRAG's NetworkX graphml file."""
-    company_dir = get_active_rag_storage_dir() / company_id
+    if company_id == "default_company":
+        company_dir = get_active_rag_storage_dir()
+    else:
+        company_dir = get_active_rag_storage_dir() / company_id
     graphml = company_dir / "graph_chunk_entity_relation.graphml"
     if not graphml.exists():
         return _empty_graph()
@@ -102,7 +105,10 @@ def _chunk_ids_for_doc_filter(doc_filter: str | None, company_id: str) -> list[s
     if not filter_name:
         return []
 
-    company_dir = get_active_rag_storage_dir() / company_id
+    if company_id == "default_company":
+        company_dir = get_active_rag_storage_dir()
+    else:
+        company_dir = get_active_rag_storage_dir() / company_id
     full_docs = _safe_load_json(company_dir / "kv_store_full_docs.json")
     doc_status = _safe_load_json(company_dir / "kv_store_doc_status.json")
     matching_doc_ids: list[str] = []
@@ -138,7 +144,10 @@ def _load_valid_entity_names(company_id: str) -> set[str]:
     post-validation kv_store. Entities not in this set are LLM hallucinations
     that should be excluded from graph responses.
     """
-    storage_dir = get_active_rag_storage_dir() / company_id
+    if company_id == "default_company":
+        storage_dir = get_active_rag_storage_dir()
+    else:
+        storage_dir = get_active_rag_storage_dir() / company_id
     full_entities_path = storage_dir / "kv_store_full_entities.json"
     if not full_entities_path.exists():
         return set()
@@ -225,9 +234,11 @@ async def get_full_graph_for_doc(doc_filter: str | None, company_id: str = "base
         chunk_ids = _chunk_ids_for_doc_filter(doc_filter, company_id)
         use_doc_filter = bool((doc_filter or "").strip()) and len(chunk_ids) > 0
 
+        cypher_label = "base" if company_id in {"default_company", "base"} else company_id
+
         node_records, _, _ = await driver.execute_query(
             f"""
-            MATCH (n:`{company_id}`) WHERE n.entity_id IS NOT NULL
+            MATCH (n:`{cypher_label}`) WHERE n.entity_id IS NOT NULL
             AND (
               $use_doc_filter = false OR
               any(chunk in $chunk_ids WHERE toLower(coalesce(n.source_id, '')) CONTAINS toLower(chunk))
@@ -241,7 +252,7 @@ async def get_full_graph_for_doc(doc_filter: str | None, company_id: str = "base
         )
         edge_records, _, _ = await driver.execute_query(
             f"""
-            MATCH (n:`{company_id}`)-[r]->(m:`{company_id}`)
+            MATCH (n:`{cypher_label}`)-[r]->(m:`{cypher_label}`)
             WHERE n.entity_id IS NOT NULL AND m.entity_id IS NOT NULL
             AND (
               $use_doc_filter = false OR
@@ -307,14 +318,16 @@ async def get_subgraph_for_doc(node_ids: list[str], doc_filter: str | None, comp
         chunk_ids = _chunk_ids_for_doc_filter(doc_filter, company_id)
         use_doc_filter = bool((doc_filter or "").strip()) and len(chunk_ids) > 0
 
+        cypher_label = "base" if company_id in {"default_company", "base"} else company_id
+
         records, _, _ = await driver.execute_query(
             f"""
-            MATCH (n:`{company_id}`) WHERE n.entity_id IN $node_ids
+            MATCH (n:`{cypher_label}`) WHERE n.entity_id IN $node_ids
             AND (
               $use_doc_filter = false OR
               any(chunk in $chunk_ids WHERE toLower(coalesce(n.source_id, '')) CONTAINS toLower(chunk))
             )
-            OPTIONAL MATCH (n)-[r]-(m:`{company_id}`) WHERE m.entity_id IN $node_ids
+            OPTIONAL MATCH (n)-[r]-(m:`{cypher_label}`) WHERE m.entity_id IN $node_ids
             AND (
               $use_doc_filter = false OR
               any(chunk in $chunk_ids WHERE toLower(coalesce(m.source_id, '')) CONTAINS toLower(chunk))

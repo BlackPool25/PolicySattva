@@ -209,7 +209,7 @@ def _build_rag(company_id: str) -> LightRAG:
 
     return LightRAG(
         working_dir=base_dir,
-        workspace=company_id,
+        workspace="" if company_id == "default_company" else company_id,
         llm_model_func=llm_func,
         llm_model_name=llm_model_name,
         embedding_func=embedding_func,
@@ -303,7 +303,10 @@ def _validate_entities_against_text(company_id: str, source_text: str) -> int:
     Returns the number of entities removed.
     """
     text_lower = source_text.lower()
-    company_dir = get_active_rag_storage_dir() / company_id
+    if company_id == "default_company":
+        company_dir = get_active_rag_storage_dir()
+    else:
+        company_dir = get_active_rag_storage_dir() / company_id
     full_entities_path = company_dir / "kv_store_full_entities.json"
     if not full_entities_path.exists():
         return 0
@@ -348,7 +351,7 @@ def _validate_entities_against_text(company_id: str, source_text: str) -> int:
     return total_removed
 
 
-async def index_document(pdf_path: str, company_id: str) -> None:
+async def index_document(pdf_path: str, company_id: str = "default_company") -> None:
     """Index a PDF into the company-scoped LightRAG workspace.
 
     Safe to call multiple times — LightRAG deduplicates by content hash.
@@ -419,7 +422,7 @@ async def delete_document(doc_id: str, company_id: str) -> bool:
         await rag.finalize_storages()
 
 
-async def query(question: str, company_id: str, doc_filter: str | None = None) -> dict[str, object]:
+async def query(question: str, company_id: str = "default_company", doc_filter: str | None = None) -> dict[str, object]:
     """Query the indexed documents for a specific company workspace.
 
     Returns:

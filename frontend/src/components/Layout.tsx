@@ -12,7 +12,7 @@ import {
   Network,
   Upload
 } from 'lucide-react';
-import { cn, listDocuments, deleteDocument, useAppStore, listWorkspaces, setProviderSettings } from '../lib/utils';
+import { cn, listDocuments, deleteDocument, useAppStore, listWorkspaces } from '../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -43,6 +43,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  const workspaceKeys = Object.keys(workspaceConfigs).join(",");
+
   // Fetch workspaces dynamically from the backend
   React.useEffect(() => {
     let cancelled = false;
@@ -50,17 +52,19 @@ export function Layout({ children }: { children: React.ReactNode }) {
       try {
         const list = await listWorkspaces();
         if (!cancelled) {
-          const combined = Array.from(new Set([...list, "default_company", companyId]));
+          const configured = Object.keys(workspaceConfigs);
+          const combined = Array.from(new Set([...list, ...configured, "default_company", companyId]));
           setWorkspaces(combined);
         }
       } catch {
         if (!cancelled) {
-          setWorkspaces(Array.from(new Set(["default_company", companyId])));
+          const configured = Object.keys(workspaceConfigs);
+          setWorkspaces(Array.from(new Set([...configured, "default_company", companyId])));
         }
       }
     };
     void fetchWorkspaces();
-  }, [companyId, documents.length]);
+  }, [companyId, documents.length, workspaceKeys]);
 
   // Poll documents for the current company
   React.useEffect(() => {
@@ -129,35 +133,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
     setNewCompanyInput('');
     setShowAddCompany(false);
 
-    try {
-      await setProviderSettings({
-        use_local_ollama: newCompanyProvider,
-        query_model: 'qwen3:8b',
-        embedding_model: 'qwen3-embedding:8b',
-        embedding_dim: 4096,
-      });
-    } catch {
-      // Safe fallback
-    }
-
     navigate('/upload');
   };
 
   const handleWorkspaceSwitch = async (nextCompanyId: string) => {
     setCompanyId(nextCompanyId);
     setActiveDoc(null);
-    
-    const config = workspaceConfigs[nextCompanyId] || { useLocalOllama: false };
-    try {
-      await setProviderSettings({
-        use_local_ollama: config.useLocalOllama,
-        query_model: 'qwen3:8b',
-        embedding_model: 'qwen3-embedding:8b',
-        embedding_dim: 4096,
-      });
-    } catch {
-      // Safe fallback
-    }
   };
 
   const navLinks = [

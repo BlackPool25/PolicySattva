@@ -194,7 +194,7 @@ export const useAppStore = create<AppStore>()(
       workspaceConfigs: {
         telegram: { useLocalOllama: true },
         spotify: { useLocalOllama: true },
-        default_company: { useLocalOllama: false },
+        default_company: { useLocalOllama: true },
       },
       setWorkspaceConfig: (companyId, config) =>
         set((state) => ({
@@ -203,7 +203,7 @@ export const useAppStore = create<AppStore>()(
             [companyId]: config,
           },
         })),
-      setCompanyId: (companyId) => set({ companyId }),
+      setCompanyId: (companyId) => set({ companyId, documents: [], activeDocId: null }),
       setDocuments: (docs) =>
         set((state) => {
           const hasActiveDoc = docs.some((doc) => doc.id === state.activeDocId);
