@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import os
 import re
@@ -19,9 +20,9 @@ load_dotenv(override=True)
 logger = logging.getLogger(__name__)
 
 # --- Model constants ---
-GEMINI_MODEL_NAME = "gemini-2.5-flash-lite"
+GEMINI_MODEL_NAME = "gemini-3.1-flash-lite"
 GEMINI_EMBED_MODEL = "gemini-embedding-2-preview"
-GEMINI_EMBED_DIM = 3072  # gemini-embedding-2-preview output dimension
+GEMINI_EMBED_DIM = int(os.getenv("GEMINI_EMBED_DIM", "1024"))  # Configurable output dimension
 
 GROQ_MODEL_NAME = "meta-llama/llama-4-scout-17b-16e-instruct"
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
@@ -186,11 +187,20 @@ def get_embedding_func() -> Callable[[list[str]], Awaitable[np.ndarray]]:
     async def embedding_func_gemini(texts: list[str]) -> np.ndarray:
         start = time.perf_counter()
         try:
-            result = await gemini_embed.func(
-                texts,
-                api_key=gemini_api_key,
-                model=GEMINI_EMBED_MODEL,
-            )
+            # gemini-embedding-2-preview (multimodal) treats list inputs as a single aggregated 
+            # content instead of distinct items in a batch. To get individual embeddings,
+            # we must call the API concurrently for each text.
+            tasks = [
+                gemini_embed.func(
+                    [text],
+                    api_key=gemini_api_key,
+                    model=GEMINI_EMBED_MODEL,
+                    embedding_dim=GEMINI_EMBED_DIM,
+                )
+                for text in texts
+            ]
+            embeddings_list = await asyncio.gather(*tasks)
+            result = np.vstack(embeddings_list)
         except Exception as exc:
             raise RuntimeError(
                 f"Gemini embedding failed: {exc}. "
@@ -259,9 +269,27 @@ def _gemini_cost_profile(keyword_extraction: bool) -> dict[str, object]:
     """Tune Gemini generation cost based on LightRAG stage."""
     if keyword_extraction:
         # Indexing/entity extraction path: keep outputs minimal and deterministic.
-        return {"temperature": 0.0, "top_p": 0.1, "max_output_tokens": 384}
+        return {
+            "temperature": 0.0,
+            "top_p": 0.1,
+            "max_output_tokens": 384,
+            "generation_config": {
+                "thinking_config": {
+                    "thinking_budget": 0
+                }
+            }
+        }
     # Query path: low-reasoning budget with enough room for concise structured answers.
-    return {"temperature": 0.1, "top_p": 0.3, "max_output_tokens": 768}
+    return {
+        "temperature": 0.1,
+        "top_p": 0.3,
+        "max_output_tokens": 768,
+        "generation_config": {
+            "thinking_config": {
+                "thinking_budget": 1024
+            }
+        }
+    }
 
 
 def _openai_like_cost_profile(keyword_extraction: bool) -> dict[str, object]:
@@ -344,7 +372,9 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
             f"PRIMARY_LLM_PROVIDER must be one of 'gemini', 'groq', or 'ollama'. Got: {primary_provider!r}"
         )
 
-    def _process_system_prompt(sys_prompt: str | None) -> str | None:
+    def _process_system_prompt(sys_prompt: str | None, is_gemini_with_thinking: bool = False) -> str | None:
+        if is_gemini_with_thinking:
+            return sys_prompt
         thinking_mode = os.getenv("INFERENCE_THINKING_MODE", "false").strip().lower()
         if thinking_mode == "false":
             no_think_instruction = "IMPORTANT: Do NOT output any internal thinking, reasoning process, chain-of-thought, or `<think>` tags. Output the final answer directly."
@@ -361,7 +391,7 @@ def get_llm_func() -> tuple[Callable[..., Awaitable[str]], str]:
         **kwargs: object,
     ) -> str:
         try:
-            system_prompt = _process_system_prompt(system_prompt)
+            system_prompt = _process_system_prompt(system_prompt, is_gemini_with_thinking=not keyword_extraction)
             if not keyword_extraction and system_prompt:
                 system_prompt += _ENTITY_VALIDATION_INSTRUCTION
             request_kwargs = {**_gemini_cost_profile(keyword_extraction), **kwargs}

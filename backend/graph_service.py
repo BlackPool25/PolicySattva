@@ -373,12 +373,41 @@ async def get_subgraph_for_doc(node_ids: list[str], doc_filter: str | None, comp
     if not node_ids:
         return _empty_graph()
     if not _neo4j_reachable():
-        # Filter the full NetworkX graph to the requested node IDs
+        # Find direct connections and 2-hop bridging nodes in NetworkX graph
         full = _graph_from_networkx_json(company_id, doc_filter)
         requested = set(node_ids)
-        nodes = [n for n in full["nodes"] if n["id"] in requested]
-        node_set = {n["id"] for n in nodes}
-        edges = [e for e in full["edges"] if e["source"] in node_set and e["target"] in node_set]
+        edges = []
+        nodes_set = set(requested)
+        
+        # Build adjacency map
+        adj = {}
+        for e in full["edges"]:
+            s, t = e["source"], e["target"]
+            if s not in adj: adj[s] = set()
+            if t not in adj: adj[t] = set()
+            adj[s].add(t)
+            adj[t].add(s)
+            
+        # Find intermediate nodes that connect at least two requested nodes
+        inter_nodes = set()
+        for node, neighbors in adj.items():
+            if node in requested:
+                continue
+            req_neighbors = neighbors.intersection(requested)
+            if len(req_neighbors) >= 2:
+                inter_nodes.add(node)
+                
+        # Gather edges
+        for e in full["edges"]:
+            s, t = e["source"], e["target"]
+            if s in requested and t in requested:
+                edges.append(e)
+            elif (s in requested and t in inter_nodes) or (t in requested and s in inter_nodes):
+                edges.append(e)
+                nodes_set.add(s)
+                nodes_set.add(t)
+                
+        nodes = [n for n in full["nodes"] if n["id"] in nodes_set]
         return {"nodes": nodes, "edges": edges, "stats": {"node_count": len(nodes), "edge_count": len(edges)}}
     try:
         driver, target = await _get_driver_and_target()
@@ -387,23 +416,32 @@ async def get_subgraph_for_doc(node_ids: list[str], doc_filter: str | None, comp
 
         cypher_label = "base" if company_id in {"default_company", "base"} else company_id
 
+        # Bridging path query:
+        # 1. Direct relationships between queried nodes
+        # 2. Relationships to intermediate nodes that connect to at least one OTHER queried node
         records, _, _ = await driver.execute_query(
             f"""
-            MATCH (n:`{cypher_label}`) WHERE n.entity_id IN $node_ids
+            MATCH (n:`{cypher_label}`)-[r]-(m:`{cypher_label}`)
+            WHERE n.entity_id IN $node_ids AND m.entity_id IN $node_ids AND n.entity_id < m.entity_id
             AND (
               $use_doc_filter = false OR
               any(chunk in $chunk_ids WHERE toLower(coalesce(n.source_id, '')) CONTAINS toLower(chunk))
             )
-            OPTIONAL MATCH (n)-[r]-(m:`{cypher_label}`) WHERE m.entity_id IN $node_ids
+            RETURN n.entity_id AS src, m.entity_id AS tgt, type(r) AS label
+            
+            UNION
+            
+            MATCH (n:`{cypher_label}`)-[r]-(inter:`{cypher_label}`)
+            WHERE n.entity_id IN $node_ids AND NOT inter.entity_id IN $node_ids
             AND (
               $use_doc_filter = false OR
-              any(chunk in $chunk_ids WHERE toLower(coalesce(m.source_id, '')) CONTAINS toLower(chunk))
+              any(chunk in $chunk_ids WHERE toLower(coalesce(n.source_id, '')) CONTAINS toLower(chunk))
             )
-            RETURN n.entity_id AS node_id,
-                   m.entity_id AS connected_id,
-                   type(r) AS rel_label,
-                   startNode(r).entity_id AS src,
-                   endNode(r).entity_id AS tgt
+            AND EXISTS {{
+                MATCH (inter)-[]-(m:`{cypher_label}`)
+                WHERE m.entity_id IN $node_ids AND m.entity_id <> n.entity_id
+            }}
+            RETURN n.entity_id AS src, inter.entity_id AS tgt, type(r) AS label
             """,
             node_ids=node_ids,
             use_doc_filter=use_doc_filter,
@@ -415,16 +453,14 @@ async def get_subgraph_for_doc(node_ids: list[str], doc_filter: str | None, comp
         edges_set: set[tuple[str, str, str]] = set()
 
         for record in records:
-            node_id = record.get("node_id")
-            connected_id = record.get("connected_id")
             src = record.get("src")
             tgt = record.get("tgt")
-            label = record.get("rel_label")
+            label = record.get("label")
 
-            if node_id:
-                nodes_set.add(str(node_id))
-            if connected_id:
-                nodes_set.add(str(connected_id))
+            if src:
+                nodes_set.add(str(src))
+            if tgt:
+                nodes_set.add(str(tgt))
             if src and tgt and label:
                 edges_set.add((str(src), str(tgt), str(label)))
 

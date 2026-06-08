@@ -11,7 +11,7 @@ from pydantic import BaseModel
 
 import graph_service
 import lightrag_engine
-from llm_provider import get_active_rag_storage_dir
+from llm_provider import get_active_rag_storage_dir, get_embedding_func, GEMINI_MODEL_NAME
 from request_queue import enqueue, start_worker, stop_all_workers, TaskPriority
 
 
@@ -265,11 +265,12 @@ def _load_all_documents() -> list[DocumentListItem]:
             companies.add("default_company")
         client.close()
     else:
+        docs_dir = Path(__file__).resolve().parent / "documents"
+        companies = set()
+        if docs_dir.exists():
+            companies.update({d.name for d in docs_dir.iterdir() if d.is_dir()})
         base = get_active_rag_storage_dir()
-        if not base.exists():
-            return []
-        companies = {d.name for d in base.iterdir() if d.is_dir()}
-        if (base / "kv_store_full_docs.json").exists():
+        if base.exists() and (base / "kv_store_full_docs.json").exists():
             companies.add("default_company")
 
     all_docs: list[DocumentListItem] = []
@@ -477,10 +478,10 @@ async def get_workspaces_endpoint() -> list[str]:
                 companies.add(coll_name[: -len("_full_docs")])
         client.close()
     else:
-        base = get_active_rag_storage_dir()
-        if not base.exists():
-            return ["default_company"]
-        companies = {f.name for f in base.iterdir() if f.is_dir()}
+        docs_dir = Path(__file__).resolve().parent / "documents"
+        companies = set()
+        if docs_dir.exists():
+            companies.update({f.name for f in docs_dir.iterdir() if f.is_dir()})
 
     if "default_company" not in companies:
         companies.add("default_company")
@@ -593,13 +594,18 @@ async def get_settings_provider() -> ProviderSettings:
     embed = os.getenv("EMBED_PROVIDER", "gemini").lower()
     mode = "local_ollama" if (primary == "ollama" or embed == "ollama") else "cloud"
     
+    # Resolve parameters from the active embedding function
+    embed_func = get_embedding_func()
+    resolved_dim = getattr(embed_func, "embedding_dim", 3072)
+    resolved_model = getattr(embed_func, "model_name", "gemini-embedding-2-preview")
+    
     return ProviderSettings(
         mode=mode,
         primary_llm_provider=primary,
         embed_provider=embed,
-        query_model=os.getenv("OLLAMA_LLM_MODEL", "qwen3:8b") if primary == "ollama" else "gemini-2.5-flash-lite",
-        embedding_model=os.getenv("OLLAMA_EMBED_MODEL", "qwen3-embedding:8b") if embed == "ollama" else "gemini-embedding-2-preview",
-        embedding_dim=int(os.getenv("OLLAMA_EMBED_DIM", "4096")) if embed == "ollama" else 3072,
+        query_model=os.getenv("OLLAMA_LLM_MODEL", "qwen3:8b") if primary == "ollama" else GEMINI_MODEL_NAME,
+        embedding_model=resolved_model,
+        embedding_dim=resolved_dim,
         requires_reindex=False,
         warning=None
     )
